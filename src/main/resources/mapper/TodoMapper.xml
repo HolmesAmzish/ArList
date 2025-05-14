@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.arorms.arlist.mapper.TodoMapper">
+
+    <select id="findAll" resultType="Todo">
+        SELECT * FROM todo
+    </select>
+
+    <select id="findById" parameterType="int" resultType="Todo">
+        SELECT * FROM todo WHERE id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="Todo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO todo(title, description, completed)
+        VALUES (#{title}, #{description}, #{completed})
+    </insert>
+
+    <update id="update" parameterType="Todo">
+        UPDATE todo
+        SET title = #{title}, description = #{description}, completed = #{completed}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM todo WHERE id = #{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Todo List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+
+<div class="w-full max-w-2xl bg-white shadow-xl rounded-2xl p-6">
+    <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">🌿 My Todo List</h1>
+
+    <!-- Add Todo Form -->
+    <form id="todo-form" class="flex gap-3 mb-6">
+        <input type="text" id="todo-title" placeholder="Enter new todo..." required
+               class="flex-grow px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <button type="submit"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">Add</button>
+    </form>
+
+    <!-- Todo List -->
+    <ul id="todo-list" class="space-y-3">
+        <!-- Todos will be rendered here -->
+    </ul>
+</div>
+
+<script>
+    const API_BASE = 'http://localhost:8080/todos';
+
+    async function fetchTodos() {
+        const res = await fetch(API_BASE);
+        const todos = await res.json();
+        renderTodos(todos);
+    }
+
+    async function addTodo(title) {
+        await fetch(API_BASE, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, completed: false })
+        });
+        fetchTodos();
+    }
+
+    async function toggleComplete(todo) {
+        await fetch(`${API_BASE}/${todo.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...todo, completed: !todo.completed })
+        });
+        fetchTodos();
+    }
+
+    async function deleteTodo(id) {
+        await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
+        fetchTodos();
+    }
+
+    function renderTodos(todos) {
+        const list = document.getElementById('todo-list');
+        list.innerHTML = '';
+        todos.forEach(todo => {
+            const li = document.createElement('li');
+            li.className = `flex justify-between items-center p-4 rounded-lg shadow ${todo.completed ? 'bg-green-100' : 'bg-gray-100'}`;
+
+            li.innerHTML = `
+          <div class="flex items-center gap-2">
+            <input type="checkbox" ${todo.completed ? 'checked' : ''} class="w-5 h-5 text-blue-600 rounded" />
+            <span class="text-lg ${todo.completed ? 'line-through text-gray-400' : 'text-gray-800'}">${todo.title}</span>
+          </div>
+          <button class="text-red-500 hover:text-red-700">Del</button>
+        `;
+
+            // checkbox toggle
+            li.querySelector('input').addEventListener('change', () => toggleComplete(todo));
+            // delete button
+            li.querySelector('button').addEventListener('click', () => deleteTodo(todo.id));
+
+            list.appendChild(li);
+        });
+    }
+
+    document.getElementById('todo-form').addEventListener('submit', e => {
+        e.preventDefault();
+        const input = document.getElementById('todo-title');
+        const title = input.value.trim();
+        if (title) {
+            addTodo(title);
+            input.value = '';
+        }
+    });
+
+    fetchTodos();
+</script>
+</body>
+</html>
