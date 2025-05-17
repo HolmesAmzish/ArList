@@ -5,11 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Todo List</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade {
+            transition: opacity 0.3s ease;
+        }
+        .fade-out {
+            opacity: 0;
+        }
+        .fade-in {
+            opacity: 1;
+        }
+    </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
 
 <div class="w-full max-w-2xl bg-white shadow-xl rounded-2xl p-6">
     <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">🌿 My Todo List</h1>
+
+    <!-- Controls -->
+    <div class="flex items-center mb-6">
+        <input type="checkbox" id="show-completed" class="mr-2">
+        <label for="show-completed">Show Completed Tasks</label>
+    </div>
 
     <!-- Add Todo Form -->
     <form id="todo-form" class="flex gap-3 mb-6">
@@ -26,62 +43,119 @@
 </div>
 
 <script>
-    const API_BASE = 'http://list.arorms.cn/todos';
-    console.log(API_BASE)
+    const API_BASE = 'http://list.arorms.cn/api/todos'
+    // const API_BASE = 'http://localhost:8080/api/todos';
+    let showCompleted = false; // Default to hide completed tasks
 
     async function fetchTodos() {
-        const res = await fetch(API_BASE);
-        const todos = await res.json();
-        renderTodos(todos);
+        try {
+            const res = await fetch(API_BASE);
+            const todos = await res.json();
+            renderTodos(todos);
+        } catch (error) {
+            console.error('Error fetching todos:', error);
+        }
     }
 
     async function addTodo(title) {
-        await fetch(API_BASE, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title, completed: false })
-        });
-        fetchTodos();
+        try {
+            await fetch(API_BASE, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title, completed: false })
+            });
+            fetchTodos();
+        } catch (error) {
+            console.error('Error adding todo:', error);
+        }
     }
 
     async function toggleComplete(todo) {
-        await fetch(`${API_BASE}/${todo.id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ...todo, completed: !todo.completed })
-        });
-        fetchTodos();
+        try {
+            await fetch(`${API_BASE}/${todo.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...todo, completed: !todo.completed })
+            });
+
+            // If task was just completed and we're not showing completed tasks, hide it
+            if (!showCompleted && !todo.completed) {
+                const li = document.querySelector(`li[data-id="${todo.id}"]`);
+                if (li) {
+                    li.classList.add('fade-out');
+                    setTimeout(() => li.remove(), 300);
+                }
+            }
+        } catch (error) {
+            console.error('Error toggling todo:', error);
+        }
     }
 
     async function deleteTodo(id) {
-        await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
-        fetchTodos();
+        try {
+            await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
+            fetchTodos();
+        } catch (error) {
+            console.error('Error deleting todo:', error);
+        }
     }
 
     function renderTodos(todos) {
         const list = document.getElementById('todo-list');
         list.innerHTML = '';
-        todos.forEach(todo => {
+
+        if (todos.length === 0) {
+            list.innerHTML = '<li class="text-center text-gray-500 py-4">No todos found</li>';
+            return;
+        }
+
+        // Filter out completed tasks unless showCompleted is true
+        const filteredTodos = showCompleted
+            ? todos
+            : todos.filter(todo => !todo.completed);
+
+        if (filteredTodos.length === 0) {
+            list.innerHTML = '<li class="text-center text-gray-500 py-4">' +
+                (showCompleted ? 'No todos found' : 'No active todos') + '</li>';
+            return;
+        }
+
+        filteredTodos.forEach(todo => {
             const li = document.createElement('li');
-            li.className = `flex justify-between items-center p-4 rounded-lg shadow ${todo.completed ? 'bg-green-100' : 'bg-gray-100'}`;
+            li.className = `flex justify-between items-center p-4 rounded-lg shadow fade ${
+                todo.completed ? 'bg-green-100' : 'bg-gray-100'
+            } fade-in`;
+            li.dataset.id = todo.id;
+            li.dataset.completed = todo.completed;
 
             li.innerHTML = `
-          <div class="flex items-center gap-2">
-            <input type="checkbox" ${todo.completed ? 'checked' : ''} class="w-5 h-5 text-blue-600 rounded" />
-            <span class="text-lg ${todo.completed ? 'line-through text-gray-400' : 'text-gray-800'}">${todo.title}</span>
-          </div>
-          <button class="text-red-500 hover:text-red-700">Del</button>
-        `;
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" ${todo.completed ? 'checked' : ''}
+                           class="w-5 h-5 text-blue-600 rounded" />
+                    <span class="text-lg ${
+                todo.completed ? 'line-through text-gray-400' : 'text-gray-800'
+            }">${todo.title}</span>
+                </div>
+                <button class="text-red-500 hover:text-red-700">Delete</button>
+            `;
 
-            // checkbox toggle
+            // Checkbox toggle
             li.querySelector('input').addEventListener('change', () => toggleComplete(todo));
-            // delete button
+
+            // Delete button
             li.querySelector('button').addEventListener('click', () => deleteTodo(todo.id));
 
             list.appendChild(li);
         });
     }
 
+    // Show completed toggle
+    document.getElementById('show-completed').addEventListener('change', (e) => {
+        showCompleted = e.target.checked;
+        fetchTodos();
+    });
+
+    // Form submission
     document.getElementById('todo-form').addEventListener('submit', e => {
         e.preventDefault();
         const input = document.getElementById('todo-title');
@@ -92,6 +166,7 @@
         }
     });
 
+    // Initial fetch
     fetchTodos();
 </script>
 </body>
