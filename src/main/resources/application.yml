@@ -8,6 +8,11 @@ spring:
     password: 20230612
     driver-class-name: org.mariadb.jdbc.Driver
 
+  sql:
+    init:
+      mode: always
+      schema-locations: schema.sql
+
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: cn.arorms.arlist.entity

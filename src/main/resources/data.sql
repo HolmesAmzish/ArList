@@ -1,0 +1,3 @@
+-- -- Insert the admin account if not exist
+-- INSERT IGNORE INTO users (username, email, password, is_admin)
+-- VALUES ('cacc', 'holmesamzish86@outlook.com', '20230612', TRUE);

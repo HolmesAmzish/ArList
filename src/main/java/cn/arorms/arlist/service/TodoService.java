@@ -1,13 +1,14 @@
 package cn.arorms.arlist.service;
 
-import cn.arorms.arlist.entity.Todo;
+import cn.arorms.arlist.entity.TodoEntity;
 
 import java.util.List;
 
 public interface TodoService {
-    List<Todo> getAll();
-    Todo getById(Integer id);
-    void add(Todo todo);
-    void update(Todo todo);
+    List<TodoEntity> getAll();
+    List<TodoEntity> getUserTodos(Long userId);
+    TodoEntity getById(Integer id);
+    void add(TodoEntity todoEntity);
+    void update(TodoEntity todoEntity);
     void delete(Integer id);
 }

@@ -1,7 +1,7 @@
 package cn.arorms.arlist.controller;
 
 
-import cn.arorms.arlist.entity.Todo;
+import cn.arorms.arlist.entity.TodoEntity;
 import cn.arorms.arlist.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,24 +16,24 @@ public class TodoController {
     private TodoService todoService;
 
     @GetMapping
-    public List<Todo> list() {
+    public List<TodoEntity> list() {
         return todoService.getAll();
     }
 
     @GetMapping("/{id}")
-    public Todo get(@PathVariable Integer id) {
+    public TodoEntity get(@PathVariable Integer id) {
         return todoService.getById(id);
     }
 
     @PostMapping
-    public void add(@RequestBody Todo todo) {
-        todoService.add(todo);
+    public void add(@RequestBody TodoEntity todoEntity) {
+        todoService.add(todoEntity);
     }
 
     @PutMapping("/{id}")
-    public void update(@PathVariable Integer id, @RequestBody Todo todo) {
-        todo.setId(id);
-        todoService.update(todo);
+    public void update(@PathVariable Integer id, @RequestBody TodoEntity todoEntity) {
+        todoEntity.setId(id);
+        todoService.update(todoEntity);
     }
 
     @DeleteMapping("/{id}")

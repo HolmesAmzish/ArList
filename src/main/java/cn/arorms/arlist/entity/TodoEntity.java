@@ -1,6 +1,6 @@
 package cn.arorms.arlist.entity;
 
-public class Todo {
+public class TodoEntity {
     private Integer id;
     private String title;
     private String description;

@@ -6,26 +6,30 @@
 <mapper namespace="cn.arorms.arlist.mapper.TodoMapper">
 
     <select id="findAll" resultType="Todo">
-        SELECT * FROM todo
+        SELECT * FROM todos
+    </select>
+
+    <select id="findAllByUserId" resultType="Todo">
+        SELECT * FROM todos WHERE user_id = #{userId}
     </select>
 
     <select id="findById" parameterType="int" resultType="Todo">
-        SELECT * FROM todo WHERE id = #{id}
+        SELECT * FROM todos WHERE id = #{id}
     </select>
 
     <insert id="insert" parameterType="Todo" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO todo(title, description, completed)
+        INSERT INTO todos(title, description, completed)
         VALUES (#{title}, #{description}, #{completed})
     </insert>
 
     <update id="update" parameterType="Todo">
-        UPDATE todo
+        UPDATE todos
         SET title = #{title}, description = #{description}, completed = #{completed}
         WHERE id = #{id}
     </update>
 
     <delete id="delete" parameterType="int">
-        DELETE FROM todo WHERE id = #{id}
+        DELETE FROM todos WHERE id = #{id}
     </delete>
 
 </mapper>

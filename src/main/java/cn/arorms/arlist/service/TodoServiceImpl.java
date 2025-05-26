@@ -1,6 +1,6 @@
 package cn.arorms.arlist.service;
 
-import cn.arorms.arlist.entity.Todo;
+import cn.arorms.arlist.entity.TodoEntity;
 import cn.arorms.arlist.mapper.TodoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,23 +14,28 @@ public class TodoServiceImpl implements TodoService {
     private TodoMapper todoMapper;
 
     @Override
-    public List<Todo> getAll() {
+    public List<TodoEntity> getAll() {
         return todoMapper.findAll();
     }
 
     @Override
-    public Todo getById(Integer id) {
-        return todoMapper.findById(id);
+    public List<TodoEntity> getUserTodos(Long userId) {
+        return todoMapper.findAllByUserId(userId);
     }
 
     @Override
-    public void add(Todo todo) {
-        todoMapper.insert(todo);
+    public TodoEntity getById(Integer id) {
+        return todoMapper.findByTodoId(id);
     }
 
     @Override
-    public void update(Todo todo) {
-        todoMapper.update(todo);
+    public void add(TodoEntity todoEntity) {
+        todoMapper.insert(todoEntity);
+    }
+
+    @Override
+    public void update(TodoEntity todoEntity) {
+        todoMapper.update(todoEntity);
     }
 
     @Override

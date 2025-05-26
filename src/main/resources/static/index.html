@@ -29,15 +29,15 @@
     </div>
 
     <!-- Add Todo Form -->
-    <form id="todo-form" class="flex gap-3 mb-6">
-        <input type="text" id="todo-title" placeholder="Enter new todo..." required
+    <form id="todoEntity-form" class="flex gap-3 mb-6">
+        <input type="text" id="todoEntity-title" placeholder="Enter new todoEntity..." required
                class="flex-grow px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
         <button type="submit"
                 class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">Add</button>
     </form>
 
     <!-- Todo List -->
-    <ul id="todo-list" class="space-y-3">
+    <ul id="todoEntity-list" class="space-y-3">
         <!-- Todos will be rendered here -->
     </ul>
 </div>
@@ -66,28 +66,28 @@
             });
             fetchTodos();
         } catch (error) {
-            console.error('Error adding todo:', error);
+            console.error('Error adding todoEntity:', error);
         }
     }
 
-    async function toggleComplete(todo) {
+    async function toggleComplete(todoEntity) {
         try {
-            await fetch(`${API_BASE}/${todo.id}`, {
+            await fetch(`${API_BASE}/${todoEntity.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...todo, completed: !todo.completed })
+                body: JSON.stringify({ ...todoEntity, completed: !todoEntity.completed })
             });
 
             // If task was just completed and we're not showing completed tasks, hide it
-            if (!showCompleted && !todo.completed) {
-                const li = document.querySelector(`li[data-id="${todo.id}"]`);
+            if (!showCompleted && !todoEntity.completed) {
+                const li = document.querySelector(`li[data-id="${todoEntity.id}"]`);
                 if (li) {
                     li.classList.add('fade-out');
                     setTimeout(() => li.remove(), 300);
                 }
             }
         } catch (error) {
-            console.error('Error toggling todo:', error);
+            console.error('Error toggling todoEntity:', error);
         }
     }
 
@@ -96,12 +96,12 @@
             await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
             fetchTodos();
         } catch (error) {
-            console.error('Error deleting todo:', error);
+            console.error('Error deleting todoEntity:', error);
         }
     }
 
     function renderTodos(todos) {
-        const list = document.getElementById('todo-list');
+        const list = document.getElementById('todoEntity-list');
         list.innerHTML = '';
 
         if (todos.length === 0) {
@@ -112,7 +112,7 @@
         // Filter out completed tasks unless showCompleted is true
         const filteredTodos = showCompleted
             ? todos
-            : todos.filter(todo => !todo.completed);
+            : todos.filter(todoEntity => !todoEntity.completed);
 
         if (filteredTodos.length === 0) {
             list.innerHTML = '<li class="text-center text-gray-500 py-4">' +
@@ -120,30 +120,30 @@
             return;
         }
 
-        filteredTodos.forEach(todo => {
+        filteredTodos.forEach(todoEntity => {
             const li = document.createElement('li');
             li.className = `flex justify-between items-center p-4 rounded-lg shadow fade ${
-                todo.completed ? 'bg-green-100' : 'bg-gray-100'
+                todoEntity.completed ? 'bg-green-100' : 'bg-gray-100'
             } fade-in`;
-            li.dataset.id = todo.id;
-            li.dataset.completed = todo.completed;
+            li.dataset.id = todoEntity.id;
+            li.dataset.completed = todoEntity.completed;
 
             li.innerHTML = `
                 <div class="flex items-center gap-2">
-                    <input type="checkbox" ${todo.completed ? 'checked' : ''}
+                    <input type="checkbox" ${todoEntity.completed ? 'checked' : ''}
                            class="w-5 h-5 text-blue-600 rounded" />
                     <span class="text-lg ${
-                todo.completed ? 'line-through text-gray-400' : 'text-gray-800'
-            }">${todo.title}</span>
+                todoEntity.completed ? 'line-through text-gray-400' : 'text-gray-800'
+            }">${todoEntity.title}</span>
                 </div>
                 <button class="text-red-500 hover:text-red-700">Delete</button>
             `;
 
             // Checkbox toggle
-            li.querySelector('input').addEventListener('change', () => toggleComplete(todo));
+            li.querySelector('input').addEventListener('change', () => toggleComplete(todoEntity));
 
             // Delete button
-            li.querySelector('button').addEventListener('click', () => deleteTodo(todo.id));
+            li.querySelector('button').addEventListener('click', () => deleteTodo(todoEntity.id));
 
             list.appendChild(li);
         });
@@ -156,9 +156,9 @@
     });
 
     // Form submission
-    document.getElementById('todo-form').addEventListener('submit', e => {
+    document.getElementById('todoEntity-form').addEventListener('submit', e => {
         e.preventDefault();
-        const input = document.getElementById('todo-title');
+        const input = document.getElementById('todoEntity-title');
         const title = input.value.trim();
         if (title) {
             addTodo(title);
