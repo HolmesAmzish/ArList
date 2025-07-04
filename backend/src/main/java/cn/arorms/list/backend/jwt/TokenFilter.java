@@ -1,7 +1,7 @@
 package cn.arorms.list.backend.jwt;
 
-import cn.arorms.raicom.service.TokenProvider;
-import cn.arorms.raicom.service.UserService;
+import cn.arorms.list.backend.jwt.TokenProvider;
+import cn.arorms.list.backend.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,7 +37,7 @@ public class TokenFilter extends OncePerRequestFilter {
         if (token != null) {
             String username = tokenProvider.getUsernameFromToken(token);
             if (tokenProvider.validateToken(token, username)) {
-                UserDetails userDetails = userService.getUserByUsername(username);
+                UserDetails userDetails = userService.getByUsername(username);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null,
                         userDetails.getAuthorities()

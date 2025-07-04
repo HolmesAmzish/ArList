@@ -15,7 +15,7 @@ import java.util.Date;
 @Component
 public class TokenProvider {
     // Set token key
-    private static final String SECRET_KEY = "BlessedIsHeThatWatchethAndKeepethHisGarments";
+    private static final String SECRET_KEY = "here_am_i_send_me";
     // Set expiration to seven days
     private static final long EXPIRATION = 3600 * 24 * 7;
 
