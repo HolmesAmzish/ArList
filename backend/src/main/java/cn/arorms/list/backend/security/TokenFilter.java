@@ -1,7 +1,5 @@
-package cn.arorms.list.backend.jwt;
+package cn.arorms.list.backend.security;
 
-import cn.arorms.list.backend.jwt.TokenProvider;
-import cn.arorms.list.backend.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,11 +18,14 @@ import java.io.IOException;
 public class TokenFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
-    private final UserService userService;
+    private final AuthService authenticationUserDetailsService;
 
-    public TokenFilter(TokenProvider tokenProvider, UserService userService) {
+    public TokenFilter(
+            TokenProvider tokenProvider,
+            AuthService authenticationUserDetailsService
+    ) {
         this.tokenProvider = tokenProvider;
-        this.userService = userService;
+        this.authenticationUserDetailsService = authenticationUserDetailsService;
     }
 
     @Override
@@ -37,16 +38,14 @@ public class TokenFilter extends OncePerRequestFilter {
         if (token != null) {
             String username = tokenProvider.getUsernameFromToken(token);
             if (tokenProvider.validateToken(token, username)) {
-                UserDetails userDetails = userService.getByUsername(username);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null,
-                        userDetails.getAuthorities()
-                );
+                UserDetails userDetails = authenticationUserDetailsService.loadUserByUsername(username);
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
-
         filterChain.doFilter(request, response);
     }
 

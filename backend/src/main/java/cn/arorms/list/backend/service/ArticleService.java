@@ -1,8 +1,7 @@
 package cn.arorms.list.backend.service;
 
-import cn.arorms.list.backend.model.ArticleEntity;
+import cn.arorms.list.backend.model.entity.ArticleEntity;
 import cn.arorms.list.backend.repository.ArticleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service

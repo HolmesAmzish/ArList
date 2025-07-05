@@ -1,6 +1,6 @@
 package cn.arorms.list.backend.config;
 
-import cn.arorms.list.backend.jwt.TokenFilter;
+import cn.arorms.list.backend.security.TokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,9 +13,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-
 import static org.springframework.security.config.Customizer.withDefaults;
 
+/**
+ * SecurityConfig
+ * @version 1.0 2025-07-05
+ * @author Cacciatore
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -48,7 +52,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/hello",
-                                "/api/auth/**"
+                                "/api/user/**",
+                                "/api/auth/**",
+                                "/api/todo/**"
                         ).permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);

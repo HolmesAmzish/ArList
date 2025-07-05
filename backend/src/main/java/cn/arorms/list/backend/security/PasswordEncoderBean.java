@@ -1,4 +1,4 @@
-package cn.arorms.list.backend.jwt;
+package cn.arorms.list.backend.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

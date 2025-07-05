@@ -1,6 +1,6 @@
 package cn.arorms.list.backend.repository;
 
-import cn.arorms.list.backend.model.UserEntity;
+import cn.arorms.list.backend.model.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

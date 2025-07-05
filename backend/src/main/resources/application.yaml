@@ -2,6 +2,9 @@ server:
   port: 8080
 
 spring:
+  config:
+    import: keys.properties
+
   datasource:
     url: jdbc:mysql://localhost:3306/arlist
     username: cacc

@@ -1,6 +1,6 @@
 package cn.arorms.list.backend.repository;
 
-import cn.arorms.list.backend.model.ArticleEntity;
+import cn.arorms.list.backend.model.entity.ArticleEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

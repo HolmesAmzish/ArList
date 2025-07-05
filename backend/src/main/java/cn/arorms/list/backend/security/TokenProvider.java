@@ -1,7 +1,8 @@
-package cn.arorms.list.backend.jwt;
+package cn.arorms.list.backend.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -15,7 +16,8 @@ import java.util.Date;
 @Component
 public class TokenProvider {
     // Set token key
-    private static final String SECRET_KEY = "here_am_i_send_me";
+    @Value("${token.secret}")
+    private String SECRET_KEY;
     // Set expiration to seven days
     private static final long EXPIRATION = 3600 * 24 * 7;
 
