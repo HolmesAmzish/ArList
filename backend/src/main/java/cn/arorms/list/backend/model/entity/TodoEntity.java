@@ -29,7 +29,7 @@ public class TodoEntity {
     private Boolean completed = false;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
     @Column(name = "due_date")
     private LocalDate dueDate;
@@ -88,11 +88,11 @@ public class TodoEntity {
         this.completed = completed;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public LocalDate getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDate createdAt) {
         this.createdAt = createdAt;
     }
 

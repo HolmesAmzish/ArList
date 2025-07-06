@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS todos (
     title VARCHAR(255) NOT NULL,
     description TEXT,
     completed BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at DATE,
     due_date DATE,
     is_my_days BOOLEAN DEFAULT FALSE,
     todo_groups VARCHAR(100),
