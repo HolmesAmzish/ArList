@@ -52,9 +52,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/hello",
-                                "/api/user/**",
-                                "/api/auth/**",
-                                "/api/todo/**"
+                                "/user/**",
+                                "/auth/**",
+                                "/todo/**"
                         ).permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);

@@ -11,7 +11,7 @@ public class ArticleEntity {
     private Long id;
     @Column(name = "title", nullable = false, length = 255)
     private String title;
-    @Column(name = "content", nullable = false, columnDefinition = "LONGTEXT")
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime created_at;

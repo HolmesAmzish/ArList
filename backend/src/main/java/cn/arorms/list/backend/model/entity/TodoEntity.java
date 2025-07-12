@@ -1,9 +1,6 @@
 package cn.arorms.list.backend.model.entity;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
-
-import java.time.LocalDateTime;
 import java.time.LocalDate;
 
 @Entity
@@ -11,13 +8,10 @@ import java.time.LocalDate;
 public class TodoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "user_id", nullable = false)
     private Long userId;
-
-    @Column(name = "parent_id")
-    private Long parentId;
 
     @Column(name = "title", nullable = false, length = 255)
     private String title;
@@ -37,14 +31,11 @@ public class TodoEntity {
     @Column(name = "is_my_days")
     private Boolean isMyDays = false;
 
-    @Column(name = "todo_groups")
-    private String todoGroups;
-
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -54,14 +45,6 @@ public class TodoEntity {
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    public Long getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(Long parentId) {
-        this.parentId = parentId;
     }
 
     public String getTitle() {
@@ -104,19 +87,11 @@ public class TodoEntity {
         this.dueDate = dueDate;
     }
 
-    public Boolean getMyDays() {
+    public Boolean getIsMyDays() {
         return isMyDays;
     }
 
-    public void setMyDays(Boolean myDays) {
+    public void setIsMyDays(Boolean myDays) {
         isMyDays = myDays;
-    }
-
-    public String getTodoGroups() {
-        return todoGroups;
-    }
-
-    public void setTodoGroups(String todoGroups) {
-        this.todoGroups = todoGroups;
     }
 }

@@ -1,0 +1,4 @@
+v0.1.20250712
+1. Update Todo List, support basic operations to manage.
+2. Set frontend proxy for api.
+3. Change database to postgresql and support ddl now.
