@@ -1,5 +1,6 @@
 package cn.arorms.list.backend.controller;
 
+import cn.arorms.list.backend.model.dto.NewTodoDto;
 import cn.arorms.list.backend.model.entity.TodoEntity;
 import cn.arorms.list.backend.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +42,14 @@ public class TodoController {
 
     // Add a new todo
     @PostMapping("/add")
-    public void addTodo(@RequestBody TodoEntity todo) {
-        todoService.addTodo(todo);
+    public void addTodo(@RequestBody NewTodoDto newTodo) {
+        TodoEntity todoInfo = TodoEntity.builder()
+                .title(newTodo.getTitle())
+                .description(newTodo.getDescription())
+                .dueDate(newTodo.getDueDate())
+                .completed(false) // Default to not completed
+                .build();
+        todoService.addTodo(newTodo.getUserId(), todoInfo);
     }
 
     // Toggle completion status of a todo

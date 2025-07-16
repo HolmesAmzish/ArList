@@ -1,24 +1,26 @@
 package cn.arorms.list.backend.service;
 
 import cn.arorms.list.backend.model.entity.TodoEntity;
+import cn.arorms.list.backend.model.entity.UserEntity;
 import cn.arorms.list.backend.repository.TodoRepository;
+import cn.arorms.list.backend.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.List;
-
 /**
  * TodoService
- * @version 1.2 2025-07-12
+ * @version 1.3 2025-07-16
  * @author Cacciatore
  */
 @Service
 public class TodoService {
     private final TodoRepository todoRepository;
-    public TodoService(TodoRepository todoRepository) {
+    private final UserRepository userRepository;
+
+    public TodoService(TodoRepository todoRepository, UserRepository userRepository) {
         this.todoRepository = todoRepository;
+        this.userRepository = userRepository;
     }
 
     public TodoEntity getTodoById(Long id) {
@@ -30,13 +32,12 @@ public class TodoService {
         return todoRepository.findAll(pageable);
     }
 
-    public void addTodo(TodoEntity todo) {
-        LocalDate currentDate = java.time.LocalDate.now();
-        todo.setCreatedAt(currentDate);
-        if(todo.getDueDate() == null) {
-            todo.setDueDate(currentDate.plusDays(1)); // Default to 1 day from now
-        }
-        todoRepository.save(todo);
+    public void addTodo(Long userId, TodoEntity todoInfo) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID:" + userId));
+        todoInfo.setUser(user);
+
+        todoRepository.save(todoInfo);
     }
 
     public void modifyTodo(TodoEntity todo) {
@@ -45,7 +46,7 @@ public class TodoService {
         existingTodo.setDescription(todo.getDescription());
         existingTodo.setCompleted(todo.getCompleted());
         existingTodo.setDueDate(todo.getDueDate());
-        existingTodo.setIsMyDays(todo.getIsMyDays());
+        existingTodo.setScheduled(todo.getScheduled());
         todoRepository.save(existingTodo);
     }
 
