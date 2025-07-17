@@ -1,11 +1,17 @@
 import { useState, useEffect } from "react";
 
 // Define the data structure for a Todo item
-interface Todo {
+export interface Todo {
   id: number;
   title: string;
   description?: string;
   completed: boolean;
+  dueDate?: string;
+  scheduled?: boolean;
+  startTime?: string;
+  endTime?: string;
+  duration?: number;
+  createdAt?: string;
 }
 
 interface TodoPage {
@@ -16,10 +22,15 @@ interface TodoPage {
   size: number;
 }
 
-export const TodoList = () => {
+interface TodoListProps {
+  onSelect: (todo: Todo) => void;
+}
+
+export const TodoList = ({ onSelect }: TodoListProps) => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [newTodo, setNewTodo] = useState("");
   const [loading, setLoading] = useState(true);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
   // assign the variable of pagintion, initialize pagination state
   const [page, setPage] = useState(0); // Current page, 0-indexed
@@ -139,9 +150,15 @@ export const TodoList = () => {
         {todos.map((todo) => (
           <li
             key={todo.id}
-            className={`flex items-center p-3 border rounded-lg ${
+            className={`flex items-center p-3 border rounded-lg cursor-pointer ${
               todo.completed ? "bg-gray-50" : "bg-white"
+            } ${
+              selectedId === todo.id ? "ring-2 ring-blue-500" : ""
             }`}
+            onClick={() => {
+              setSelectedId(todo.id);
+              onSelect(todo);
+            }}
           >
             <input
               type="checkbox"

@@ -1,14 +1,12 @@
 package cn.arorms.list.backend.controller;
 
-import cn.arorms.list.backend.model.dto.NewTodoDto;
+import cn.arorms.list.backend.model.dto.TodoDto;
 import cn.arorms.list.backend.model.entity.TodoEntity;
 import cn.arorms.list.backend.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * TodoController
@@ -24,9 +22,9 @@ public class TodoController {
         this.todoService = todoService;
     }
 
-    // Get a todos detail by ID
+    // Get an entity detail by ID
     @GetMapping("/{id}")
-    public TodoEntity getTodoById(@PathVariable Long id) {
+    public TodoDto getTodoById(@PathVariable Long id) {
         return todoService.getTodoById(id);
     }
 
@@ -40,9 +38,9 @@ public class TodoController {
         return todoService.getAllTodos(pageable);
     }
 
-    // Add a new todo
+    // Add a new entity
     @PostMapping("/add")
-    public void addTodo(@RequestBody NewTodoDto newTodo) {
+    public void addTodo(@RequestBody TodoDto newTodo) {
         TodoEntity todoInfo = TodoEntity.builder()
                 .title(newTodo.getTitle())
                 .description(newTodo.getDescription())
@@ -52,22 +50,22 @@ public class TodoController {
         todoService.addTodo(newTodo.getUserId(), todoInfo);
     }
 
-    // Toggle completion status of a todo
+    // Toggle completion status of an entity
     @PostMapping("/toggleComplete/{id}")
     public void completeTodo(@PathVariable Long id) {
-        TodoEntity todo = todoService.getTodoById(id);
+        TodoDto todo = todoService.getTodoById(id);
         todo.setCompleted(!todo.getCompleted());
         todoService.modifyTodo(todo);
     }
 
-    // Delete a todo
+    // Delete an entity
     @PostMapping("/delete/{id}")
     public void deleteTodo(@PathVariable Long id) {
         todoService.deleteTodo(id);
     }
 
     @PostMapping("/modify")
-    public void modifyTodo(@RequestBody TodoEntity todo) {
+    public void modifyTodo(@RequestBody TodoDto todo) {
         todoService.modifyTodo(todo);
     }
 }

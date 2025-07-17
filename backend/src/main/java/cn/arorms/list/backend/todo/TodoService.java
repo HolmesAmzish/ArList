@@ -1,5 +1,6 @@
 package cn.arorms.list.backend.service;
 
+import cn.arorms.list.backend.model.dto.TodoDto;
 import cn.arorms.list.backend.model.entity.TodoEntity;
 import cn.arorms.list.backend.model.entity.UserEntity;
 import cn.arorms.list.backend.repository.TodoRepository;
@@ -7,6 +8,8 @@ import cn.arorms.list.backend.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /**
  * TodoService
@@ -23,9 +26,19 @@ public class TodoService {
         this.userRepository = userRepository;
     }
 
-    public TodoEntity getTodoById(Long id) {
-        return todoRepository.findById(id)
+    public TodoDto getTodoById(Long id) {
+        TodoEntity todoInfo = todoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Todo not found with ID:" + id));
+        TodoDto todoDto = TodoDto.builder()
+                .id(todoInfo.getId())
+                .title(todoInfo.getTitle())
+                .description(todoInfo.getDescription())
+                .dueDate(todoInfo.getDueDate())
+                .completed(todoInfo.getCompleted())
+                .scheduled(todoInfo.getScheduled())
+                .userId(todoInfo.getUser().getId())
+                .build();
+        return todoDto;
     }
 
     public Page<TodoEntity> getAllTodos(Pageable pageable) {
@@ -33,15 +46,17 @@ public class TodoService {
     }
 
     public void addTodo(Long userId, TodoEntity todoInfo) {
-        UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID:" + userId));
+        Optional<UserEntity> userOptional = userRepository.findById(userId);
+        UserEntity user = userOptional.orElseThrow(() -> new RuntimeException("User not found with ID:" + userId));
         todoInfo.setUser(user);
 
         todoRepository.save(todoInfo);
     }
 
-    public void modifyTodo(TodoEntity todo) {
-        TodoEntity existingTodo = getTodoById(todo.getId());
+    public void modifyTodo(TodoDto todo) {
+        Optional<TodoEntity> existingTodoOptional = todoRepository.findById(todo.getId());
+        TodoEntity existingTodo = existingTodoOptional
+                .orElseThrow(() -> new RuntimeException("Todo not found with ID:" + todo.getId()));
         existingTodo.setTitle(todo.getTitle());
         existingTodo.setDescription(todo.getDescription());
         existingTodo.setCompleted(todo.getCompleted());
@@ -51,7 +66,8 @@ public class TodoService {
     }
 
     public void deleteTodo(Long id) {
-        TodoEntity todo = getTodoById(id);
+        Optional<TodoEntity> todoOptinal = todoRepository.findById(id);
+        TodoEntity todo = todoOptinal.orElseThrow(() -> new RuntimeException("Todo not found with ID:" + id));
         todoRepository.delete(todo);
     }
 }
