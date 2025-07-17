@@ -24,9 +24,10 @@ interface TodoPage {
 
 interface TodoListProps {
   onSelect: (todo: Todo) => void;
+  reloadTrigger: number; // Trigger to reload the todo list
 }
 
-export const TodoList = ({ onSelect }: TodoListProps) => {
+export const TodoList = ({ onSelect, reloadTrigger }: TodoListProps) => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [newTodo, setNewTodo] = useState("");
   const [loading, setLoading] = useState(true);
@@ -39,7 +40,7 @@ export const TodoList = ({ onSelect }: TodoListProps) => {
 
   useEffect(() => {
     fetchTodos();
-  }, [page, size]); // Fetch todos whenever page or size changes
+  }, [page, size, reloadTrigger]); // Fetch todos whenever page or size changes
 
   /**
    * Fetches the list of todos from the API
@@ -92,16 +93,29 @@ export const TodoList = ({ onSelect }: TodoListProps) => {
   };
 
   const toggleCompleteTodo = async (id: number) => {
+    // Optimistic update
+    const updatedTodos = todos.map(todo => 
+      todo.id === id ? {...todo, completed: !todo.completed} : todo
+    );
+    setTodos(updatedTodos);
+    
+    // Notify parent immediately
+    const updatedTodo = updatedTodos.find(t => t.id === id);
+    if (updatedTodo) {
+      onSelect(updatedTodo);
+    }
+
+    // Sync with server
     try {
-      const response = await fetch(`/api/todo/toggleComplete/${id}`, {
+      await fetch(`/api/todo/toggleComplete/${id}`, {
         method: "POST",
       });
-
-      if (response.ok) {
-        fetchTodos();
-      }
+      // Refresh list to ensure consistency
+      await fetchTodos();
     } catch (error) {
       console.error("Error completing todo:", error);
+      // Rollback on error
+      setTodos(todos);
     }
   };
 
@@ -152,9 +166,7 @@ export const TodoList = ({ onSelect }: TodoListProps) => {
             key={todo.id}
             className={`flex items-center p-3 border rounded-lg cursor-pointer ${
               todo.completed ? "bg-gray-50" : "bg-white"
-            } ${
-              selectedId === todo.id ? "ring-2 ring-blue-500" : ""
-            }`}
+            } ${selectedId === todo.id ? "ring-2 ring-blue-500" : ""}`}
             onClick={() => {
               setSelectedId(todo.id);
               onSelect(todo);
@@ -178,7 +190,20 @@ export const TodoList = ({ onSelect }: TodoListProps) => {
               className="ml-2 text-red-500 hover:text-red-700"
               title="Delete todo"
             >
-              Delete
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M6 18 18 6M6 6l12 12"
+                />
+              </svg>
             </button>
           </li>
         ))}

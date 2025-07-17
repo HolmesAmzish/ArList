@@ -1,8 +1,5 @@
-package cn.arorms.list.backend.controller;
+package cn.arorms.list.backend.todo;
 
-import cn.arorms.list.backend.model.dto.TodoDto;
-import cn.arorms.list.backend.model.entity.TodoEntity;
-import cn.arorms.list.backend.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +27,7 @@ public class TodoController {
 
     // Get all todos with pagination
     @GetMapping("/all")
-    public Page<TodoEntity> getAllTodos(
+    public Page<TodoDto> getAllTodos(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
     ) {
@@ -54,8 +51,14 @@ public class TodoController {
     @PostMapping("/toggleComplete/{id}")
     public void completeTodo(@PathVariable Long id) {
         TodoDto todo = todoService.getTodoById(id);
-        todo.setCompleted(!todo.getCompleted());
-        todoService.modifyTodo(todo);
+        TodoDto updatedTodo = new TodoDto();
+        updatedTodo.setId(todo.getId());
+        updatedTodo.setTitle(todo.getTitle());
+        updatedTodo.setDescription(todo.getDescription());
+        updatedTodo.setDueDate(todo.getDueDate());
+        updatedTodo.setScheduled(todo.getScheduled());
+        updatedTodo.setCompleted(!todo.getCompleted());
+        todoService.modifyTodo(updatedTodo);
     }
 
     // Delete an entity
@@ -64,7 +67,7 @@ public class TodoController {
         todoService.deleteTodo(id);
     }
 
-    @PostMapping("/modify")
+    @PostMapping("/modify/{id}")
     public void modifyTodo(@RequestBody TodoDto todo) {
         todoService.modifyTodo(todo);
     }

@@ -1,9 +1,9 @@
-package cn.arorms.list.backend.model.entity;
+package cn.arorms.list.backend.todo;
 
+import cn.arorms.list.backend.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -18,7 +18,7 @@ public class TodoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 

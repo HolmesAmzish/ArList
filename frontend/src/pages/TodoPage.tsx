@@ -5,7 +5,10 @@ import { TodoDetail } from '../components/TodoDetail';
 import type { Todo } from '../components/TodoList';
 
 export const TodoPage = () => {
+  // Select todo detail from list component
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
+  // Update todolist after modification
+  const [reloadTrigger, setReloadTrigger] = useState(0);
 
   const handleTodoSelect = (todo: Todo) => {
     setSelectedTodo(todo);
@@ -13,13 +16,14 @@ export const TodoPage = () => {
 
   const handleTodoUpdate = (updatedTodo: Todo) => {
     setSelectedTodo(updatedTodo);
+    setReloadTrigger(prev => prev + 1); // Trigger reload of todo list
   };
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 flex items-start">
       {/* TodoList */}
       <div className="w-1/5 pr-4">
-        <TodoList onSelect={handleTodoSelect} />
+        <TodoList onSelect={handleTodoSelect} reloadTrigger={reloadTrigger}/>
       </div>
 
       {/* TodoDetail */}

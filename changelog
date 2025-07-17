@@ -1,3 +1,7 @@
+v0.1.20250717
+1. Update TodoEntity and TodoDto, add foreign key for User connection
+2. Add schedule attributes to Todo
+
 v0.1.20250712
 1. Update Todo List, support basic operations to manage.
 2. Set frontend proxy for api.

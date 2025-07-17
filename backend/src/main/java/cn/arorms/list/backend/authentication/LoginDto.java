@@ -1,4 +1,4 @@
-package cn.arorms.list.backend.model.dto;
+package cn.arorms.list.backend.authentication;
 
 public class LoginDto {
 }

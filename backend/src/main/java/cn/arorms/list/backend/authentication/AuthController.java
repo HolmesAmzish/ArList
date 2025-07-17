@@ -1,4 +1,4 @@
-package cn.arorms.list.backend.controller;
+package cn.arorms.list.backend.authentication;
 
 public class AuthController {
 }

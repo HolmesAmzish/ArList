@@ -1,4 +1,4 @@
-package cn.arorms.list.backend.model.entity;
+package cn.arorms.list.backend.article;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

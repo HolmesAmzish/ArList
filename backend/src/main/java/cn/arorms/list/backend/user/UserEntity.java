@@ -1,4 +1,4 @@
-package cn.arorms.list.backend.model.entity;
+package cn.arorms.list.backend.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

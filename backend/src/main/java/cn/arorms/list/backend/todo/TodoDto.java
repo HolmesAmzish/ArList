@@ -1,16 +1,12 @@
-package cn.arorms.list.backend.model.dto;
-
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
+package cn.arorms.list.backend.todo;
+import lombok.*;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @ToString
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TodoDto {
     private Long id;
     private Long userId;
@@ -23,4 +19,18 @@ public class TodoDto {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private Integer duration; // Minutes
+
+    public TodoDto(TodoEntity entity) {
+        this.id = entity.getId();
+        this.userId = entity.getUser() != null ? entity.getUser().getId() : null;
+        this.title = entity.getTitle();
+        this.description = entity.getDescription();
+        this.completed = entity.getCompleted();
+        this.createdAt = entity.getCreatedAt();
+        this.dueDate = entity.getDueDate();
+        this.scheduled = entity.getScheduled();
+        this.startTime = entity.getStartTime();
+        this.endTime = entity.getEndTime();
+        this.duration = entity.getDuration();
+    }
 }

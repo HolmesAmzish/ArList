@@ -1,7 +1,7 @@
-package cn.arorms.list.backend.service;
+package cn.arorms.list.backend;
 
-import cn.arorms.list.backend.model.entity.UserEntity;
-import cn.arorms.list.backend.repository.UserRepository;
+import cn.arorms.list.backend.user.UserEntity;
+import cn.arorms.list.backend.user.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
