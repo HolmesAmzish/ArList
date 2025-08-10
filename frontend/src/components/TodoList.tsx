@@ -1,59 +1,59 @@
+/**
+ * TodoList Component
+ */
 import { useState, useEffect } from "react";
 
-// Define the data structure for a Todo item
+/**
+ * 待办事项数据结构
+ */
 interface Todo {
-  id: number;
-  title: string;
+  id: number;          
+  title: string;       
   description?: string;
-  completed: boolean;
+  completed: boolean;  
+  duration?: number;   
 }
 
-interface TodoPage {
-  content: Todo[];
-  totalPages: number;
-  totalElements: number;
-  number: number;
-  size: number;
+/**
+ * 组件属性定义
+ */
+interface TodoListProps {
+  onSelect: (todo: Todo) => void;  // 选择待办项的回调
+  reloadTrigger: number;           // 重新加载触发标志
 }
 
-export const TodoList = () => {
+export const TodoList = ({ onSelect, reloadTrigger }: TodoListProps) => {
+  // State declarations in consistent order
   const [todos, setTodos] = useState<Todo[]>([]);
   const [newTodo, setNewTodo] = useState("");
   const [loading, setLoading] = useState(true);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [page, setPage] = useState(0);
+  const [size, setSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
 
-  // assign the variable of pagintion, initialize pagination state
-  const [page, setPage] = useState(0); // Current page, 0-indexed
-  const [size, setSize] = useState(10); // Number of items per page
-  const [totalPages, setTotalPages] = useState(0); // Total number of pages from backend
-
-  useEffect(() => {
-    fetchTodos();
-  }, [page, size]); // Fetch todos whenever page or size changes
-
-  /**
-   * Fetches the list of todos from the API
-   */
   const fetchTodos = async () => {
     try {
       setLoading(true);
       const response = await fetch(`/api/todo/all?page=${page}&size=${size}`);
-      if (!response.ok) {
-        throw new Error(
-          `Failed to fetch todos: ${response.status} ${response.statusText}`
-        );
-      }
-      const data: TodoPage = await response.json(); // Data is of type TodoPage
-      setTodos(data.content); // CORRECT: Assigns the array from 'content' to 'todos' state
+      if (!response.ok) throw new Error('Failed to fetch todos');
+      const data = await response.json();
+      setTodos(data.content);
       setTotalPages(data.totalPages);
-      // ... (rest of your function)
     } catch (error) {
       console.error("Error fetching todos:", error);
-      setTodos([]); // Important: Ensure it's an empty array on error
+      setTodos([]);
       setTotalPages(0);
     } finally {
       setLoading(false);
     }
   };
+
+  // Data fetching effect
+  useEffect(() => {
+    fetchTodos();
+  }, [page, size, reloadTrigger]);
+
 
   const addTodo = async () => {
     if (!newTodo.trim()) return;
@@ -81,16 +81,24 @@ export const TodoList = () => {
   };
 
   const toggleCompleteTodo = async (id: number) => {
+    const updatedTodos = todos.map(todo => 
+      todo.id === id ? {...todo, completed: !todo.completed} : todo
+    );
+    setTodos(updatedTodos);
+    
+    const updatedTodo = updatedTodos.find(t => t.id === id);
+    if (updatedTodo) {
+      onSelect(updatedTodo);
+    }
+
     try {
-      const response = await fetch(`/api/todo/toggleComplete/${id}`, {
+      await fetch(`/api/todo/toggleComplete/${id}`, {
         method: "POST",
       });
-
-      if (response.ok) {
-        fetchTodos();
-      }
+      await fetchTodos();
     } catch (error) {
       console.error("Error completing todo:", error);
+      setTodos(todos);
     }
   };
 
@@ -113,10 +121,9 @@ export const TodoList = () => {
   }
 
   return (
-    <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
+    <div id="todo-list-container" className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
       <h1 className="text-2xl font-bold text-gray-800 mb-6">Todo List</h1>
 
-      {/* Adding a new todo */}
       <div className="flex mb-4">
         <input
           type="text"
@@ -134,14 +141,18 @@ export const TodoList = () => {
         </button>
       </div>
 
-      {/* Display the list of todos */}
       <ul className="space-y-2">
         {todos.map((todo) => (
           <li
             key={todo.id}
-            className={`flex items-center p-3 border rounded-lg ${
+            className={`todo-item flex items-center p-3 border rounded-lg cursor-pointer ${
               todo.completed ? "bg-gray-50" : "bg-white"
-            }`}
+            } ${selectedId === todo.id ? "ring-2 ring-blue-500" : ""}`}
+            data-todo-id={todo.id}
+            onClick={() => {
+              setSelectedId(todo.id);
+              onSelect(todo);
+            }}
           >
             <input
               type="checkbox"
@@ -149,11 +160,7 @@ export const TodoList = () => {
               onChange={() => toggleCompleteTodo(todo.id)}
               className="h-5 w-5 text-blue-500 rounded mr-3"
             />
-            <span
-              className={`flex-grow ${
-                todo.completed ? "line-through text-gray-500" : "text-gray-800"
-              }`}
-            >
+            <span className={`flex-grow ${todo.completed ? "line-through text-gray-500" : "text-gray-800"}`}>
               {todo.title}
             </span>
             <button
@@ -161,29 +168,34 @@ export const TodoList = () => {
               className="ml-2 text-red-500 hover:text-red-700"
               title="Delete todo"
             >
-              Delete
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="size-5"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
             </button>
           </li>
         ))}
       </ul>
 
-      {/* Pagination controls */}
       <div className="flex justify-between items-center mt-4">
         <button
-          onClick={() => setPage((p) => Math.max(0, p - 1))} // Go to previous page, not below 0
-          disabled={page === 0} // Disable if currently on the first page
-          className="px-4 py-2 border rounded disabled:opacity-50"
+          onClick={() => setPage((p) => Math.max(0, p - 1))}
+          disabled={page === 0}
+          className="px-4 py-2 border rounded disabled:opacity-50 hover:bg-gray-50"
         >
           Previous
         </button>
-        {/* Display current page (1-indexed for user) and total pages */}
-        <span>
-          Page {page + 1} of {totalPages}
-        </span>
+        <span>Page {page + 1} of {totalPages}</span>
         <button
-          onClick={() => setPage((p) => p + 1)} // Go to next page
-          disabled={page >= totalPages - 1} // Disable if currently on the last page
-          className="px-4 py-2 border rounded disabled:opacity-50"
+          onClick={() => setPage((p) => p + 1)}
+          disabled={page >= totalPages - 1}
+          className="px-4 py-2 border rounded disabled:opacity-50 hover:bg-gray-50"
         >
           Next
         </button>

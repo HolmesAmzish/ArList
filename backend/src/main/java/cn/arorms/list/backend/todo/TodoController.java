@@ -1,13 +1,9 @@
-package cn.arorms.list.backend.controller;
+package cn.arorms.list.backend.todo;
 
-import cn.arorms.list.backend.model.entity.TodoEntity;
-import cn.arorms.list.backend.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * TodoController
@@ -23,15 +19,15 @@ public class TodoController {
         this.todoService = todoService;
     }
 
-    // Get a todos detail by ID
+    // Get an entity detail by ID
     @GetMapping("/{id}")
-    public TodoEntity getTodoById(@PathVariable Long id) {
+    public TodoDto getTodoById(@PathVariable Long id) {
         return todoService.getTodoById(id);
     }
 
     // Get all todos with pagination
     @GetMapping("/all")
-    public Page<TodoEntity> getAllTodos(
+    public Page<TodoDto> getAllTodos(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
     ) {
@@ -39,28 +35,40 @@ public class TodoController {
         return todoService.getAllTodos(pageable);
     }
 
-    // Add a new todo
+    // Add a new entity
     @PostMapping("/add")
-    public void addTodo(@RequestBody TodoEntity todo) {
-        todoService.addTodo(todo);
+    public void addTodo(@RequestBody TodoDto newTodo) {
+        TodoEntity todoInfo = TodoEntity.builder()
+                .title(newTodo.getTitle())
+                .description(newTodo.getDescription())
+                .dueDate(newTodo.getDueDate())
+                .completed(false) // Default to not completed
+                .build();
+        todoService.addTodo(newTodo.getUserId(), todoInfo);
     }
 
-    // Toggle completion status of a todo
+    // Toggle completion status of an entity
     @PostMapping("/toggleComplete/{id}")
     public void completeTodo(@PathVariable Long id) {
-        TodoEntity todo = todoService.getTodoById(id);
-        todo.setCompleted(!todo.getCompleted());
-        todoService.modifyTodo(todo);
+        TodoDto todo = todoService.getTodoById(id);
+        TodoDto updatedTodo = new TodoDto();
+        updatedTodo.setId(todo.getId());
+        updatedTodo.setTitle(todo.getTitle());
+        updatedTodo.setDescription(todo.getDescription());
+        updatedTodo.setDueDate(todo.getDueDate());
+        updatedTodo.setScheduled(todo.getScheduled());
+        updatedTodo.setCompleted(!todo.getCompleted());
+        todoService.modifyTodo(updatedTodo);
     }
 
-    // Delete a todo
+    // Delete an entity
     @PostMapping("/delete/{id}")
     public void deleteTodo(@PathVariable Long id) {
         todoService.deleteTodo(id);
     }
 
-    @PostMapping("/modify")
-    public void modifyTodo(@RequestBody TodoEntity todo) {
+    @PostMapping("/modify/{id}")
+    public void modifyTodo(@RequestBody TodoDto todo) {
         todoService.modifyTodo(todo);
     }
 }

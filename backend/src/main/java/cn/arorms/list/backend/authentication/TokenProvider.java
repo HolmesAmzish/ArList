@@ -1,4 +1,4 @@
-package cn.arorms.list.backend.security;
+package cn.arorms.list.backend.authentication;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

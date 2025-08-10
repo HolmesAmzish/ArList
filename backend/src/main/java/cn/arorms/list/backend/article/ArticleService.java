@@ -1,7 +1,5 @@
-package cn.arorms.list.backend.service;
+package cn.arorms.list.backend.article;
 
-import cn.arorms.list.backend.model.entity.ArticleEntity;
-import cn.arorms.list.backend.repository.ArticleRepository;
 import org.springframework.stereotype.Service;
 
 @Service

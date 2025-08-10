@@ -1,6 +1,5 @@
-package cn.arorms.list.backend.repository;
+package cn.arorms.list.backend.todo;
 
-import cn.arorms.list.backend.model.entity.TodoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TodoRepository extends JpaRepository<TodoEntity, Long> {
