@@ -1,7 +1,7 @@
 //package cn.arorms.list.backend.authentication;
 //
-//import cn.arorms.list.backend.user.UserEntity;
-//import cn.arorms.list.backend.user.UserRepository;
+//import cn.arorms.list.backend.pojo.entity.UserEntity;
+//import cn.arorms.list.backend.repository.UserRepository;
 //import org.springframework.security.core.userdetails.UserDetails;
 //import org.springframework.security.core.userdetails.UserDetailsService;
 //import org.springframework.security.core.userdetails.UsernameNotFoundException;

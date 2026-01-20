@@ -1,7 +1,7 @@
 package cn.arorms.list.backend;
 
-import cn.arorms.list.backend.user.UserEntity;
-import cn.arorms.list.backend.user.UserRepository;
+import cn.arorms.list.backend.pojo.entity.User;
+import cn.arorms.list.backend.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
@@ -22,7 +22,7 @@ public class SeedDataService implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         if (userRepository.count() == 0) {
             // Initialize with default users
-            UserEntity defualtAdmin = UserEntity.builder()
+            User defualtAdmin = User.builder()
                     .username("Cacciatore")
                     .password("20230612")
                     .email("cacc@mail.arorms.cn")

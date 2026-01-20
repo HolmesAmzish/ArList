@@ -1,6 +1,6 @@
 //package cn.arorms.list.backend.authentication;
 //
-//import cn.arorms.list.backend.user.UserEntity;
+//import cn.arorms.list.backend.pojo.entity.UserEntity;
 //import org.springframework.security.core.GrantedAuthority;
 //import org.springframework.security.core.userdetails.UserDetails;
 //
