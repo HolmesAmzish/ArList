@@ -1,7 +1,19 @@
 import { useState } from 'react';
-import { TodoList } from '../components/TodoList';
-import { TodoDetail } from '../components/TodoDetail';
-import type { Todo } from '../components/TodoList';
+
+interface group {
+    id: number;
+    name: string;
+    description: string;
+}
+
+interface Todo {
+    id: number;
+    group: group;
+    title: string;
+    isCompleted: boolean;
+    createdAt: Date;
+    deadline: Date;
+}
 
 export const TodoPage = () => {
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);

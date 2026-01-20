@@ -1,4 +1,4 @@
-package cn.arorms.list.backend.user;
+package cn.arorms.list.backend.pojo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -6,14 +6,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Entity
-@Builder
-@Table(name = "users")
-public class UserEntity {
+@Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
+@Entity @Table(name = "users")
+public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
