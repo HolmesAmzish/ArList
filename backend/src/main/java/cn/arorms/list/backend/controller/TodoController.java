@@ -28,7 +28,7 @@ public class TodoController {
             @RequestParam(value = "size", defaultValue = "10") int size
     ) {
         Pageable pageable = Pageable.ofSize(size).withPage(page);
-        return todoService.getAllTodos(pageable);
+        return todoService.getTodos(pageable);
     }
     // Get an entity detail by ID
     @GetMapping("/{id}")
@@ -36,20 +36,16 @@ public class TodoController {
         return todoService.getTodoById(id);
     }
 
-
-
     // Add a new entity
     @PostMapping("/add")
-    public void addTodo(@RequestBody Todo todo) {
-        todoService.addTodo(todo);
+    public ResponseEntity<Todo> addTodo(@RequestBody Todo todo) {
+        return ResponseEntity.ok(todoService.addTodo(todo));
     }
 
     // Toggle completion status of an entity
-    @PostMapping("/toggleComplete/{id}")
-    public void completeTodo(@PathVariable Long id) {
-        Todo todo = todoService.getTodoById(id);
-        todo.setIsCompleted(!todo.getIsCompleted());
-        todoService.modifyTodo(todo);
+    @PutMapping("/toggleComplete/{id}")
+    public ResponseEntity<Todo> toggleCompleteTodo(@PathVariable Long id) {
+        return ResponseEntity.ok(todoService.toggleCompleted(id));
     }
 
     // Delete an entity
@@ -59,8 +55,8 @@ public class TodoController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/modify/{id}")
-    public void modifyTodo(@RequestBody Todo todo) {
-        todoService.modifyTodo(todo);
+    @PutMapping("/{id}")
+    public ResponseEntity<Todo> modifyTodo(@RequestBody Todo todo) {
+        return ResponseEntity.ok(todoService.updateTodo(todo));
     }
 }

@@ -1,7 +1,8 @@
 package cn.arorms.list.backend.service;
 
+import cn.arorms.list.backend.pojo.entity.Group;
 import cn.arorms.list.backend.pojo.entity.Todo;
-import cn.arorms.list.backend.pojo.entity.User;
+import cn.arorms.list.backend.repository.GroupRepository;
 import cn.arorms.list.backend.repository.TodoRepository;
 import cn.arorms.list.backend.repository.UserRepository;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 /**
@@ -23,15 +25,15 @@ import java.util.Optional;
 public class TodoService {
     private static final Logger log = LoggerFactory.getLogger(TodoService.class);
     private final TodoRepository todoRepository;
-    private final UserRepository userRepository;
+    private final GroupRepository groupRepository;
 
-    public TodoService(TodoRepository todoRepository, UserRepository userRepository) {
+    public TodoService(TodoRepository todoRepository, GroupRepository groupRepository) {
         this.todoRepository = todoRepository;
-        this.userRepository = userRepository;
+        this.groupRepository = groupRepository;
     }
 
     // Get all
-    public Page<Todo> getAllTodos(Pageable pageable) {
+    public Page<Todo> getTodos(Pageable pageable) {
         Pageable sortedPageable = PageRequest.of(
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
@@ -47,13 +49,27 @@ public class TodoService {
     }
 
     // Create
-    public void addTodo(Todo todoInfo) {
-        todoRepository.save(todoInfo);
+    public Todo addTodo(Todo todo) {
+//        if (todo.getGroupId() != null) {
+//            todo.setGroup(groupRepository.getReferenceById(todo.getGroupId()));
+//        }
+        return todoRepository.save(todo);
     }
 
     // Update
-    public void modifyTodo(Todo todo) {
-        todoRepository.save(todo);
+    public Todo updateTodo(Todo todo) {
+        if (!todoRepository.existsById(todo.getId())) {
+            throw new NoSuchElementException("Can not found existing todo.");
+        }
+        return todoRepository.save(todo);
+    }
+
+    // Toggle isCompleted
+    public Todo toggleCompleted(Long id) {
+        Todo existingTodo = todoRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Can not found existing todo."));
+        existingTodo.setIsCompleted(!existingTodo.getIsCompleted());
+        return todoRepository.save(existingTodo);
     }
 
     // Delete
