@@ -1,36 +1,90 @@
-import React, { useState } from 'react';
-import { Sidebar } from '../components/todo/Sidebar';
-import { TodoItem } from '../components/todo/TodoItem';
+import React, { useState, useEffect } from 'react';
+import { Sidebar } from '../componets/todo/Sidebar.tsx';
+import { TodoItem } from '../componets/todo/TodoItem.tsx';
 import { Plus, LayoutList } from 'lucide-react';
-import { Group, Todo } from '../types';
+import type {Group, Todo} from '../types.ts';
+import { groupApi, todoApi } from '../api.ts';
 
 export const TodoPage: React.FC = () => {
     const [groups, setGroups] = useState<Group[]>([]);
     const [todos, setTodos] = useState<Todo[]>([]);
-    const [activeId, setActiveId] = useState('all');
+    const [activeId, setActiveId] = useState<string | number>('all');
     const [inputValue, setInputValue] = useState('');
+    const [loading, setLoading] = useState(true);
 
-    // 这里的逻辑将来替换为你的 API 调用
-    const handleAddGroup = () => {
-        const name = prompt('请输入分组名称:');
-        if (name) setGroups([...groups, { id: crypto.randomUUID(), name }]);
+    useEffect(() => {
+        loadData();
+    }, []);
+
+    const loadData = async () => {
+        try {
+            const [groupsData, todosData] = await Promise.all([
+                groupApi.getAllGroups(),
+                todoApi.getAllTodos(0, 1000) // Load all todos
+            ]);
+            setGroups(groupsData);
+            setTodos(todosData.content);
+        } catch (error) {
+            console.error('Failed to load data:', error);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleAddTodo = (e: React.FormEvent) => {
+    const handleAddGroup = async () => {
+        const name = prompt('Enter group name:');
+        if (!name?.trim()) return;
+
+        try {
+            await groupApi.addGroup({ name, description: '' });
+            await loadData(); // Reload groups
+        } catch (error) {
+            console.error('Failed to add group:', error);
+        }
+    };
+
+    const handleAddTodo = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!inputValue.trim() || activeId === 'all') return;
-        const newTodo: Todo = {
-            id: crypto.randomUUID(),
-            groupId: activeId,
-            text: inputValue,
-            completed: false
+        if (!inputValue.trim()) return;
+
+        const todoData: any = {
+            title: inputValue,
+            description: ''
         };
-        setTodos([newTodo, ...todos]);
-        setInputValue('');
+
+        if (typeof activeId === 'number') {
+            todoData.group = { id: activeId };
+        }
+
+        try {
+            await todoApi.addTodo(todoData);
+            setInputValue('');
+            await loadData(); // Reload todos
+        } catch (error) {
+            console.error('Failed to add todo:', error);
+        }
+    };
+
+    const handleToggleTodo = async (id: number) => {
+        try {
+            await todoApi.toggleCompleteTodo(id);
+            await loadData(); // Reload todos
+        } catch (error) {
+            console.error('Failed to toggle todo:', error);
+        }
+    };
+
+    const handleDeleteTodo = async (id: number) => {
+        try {
+            await todoApi.deleteTodo(id);
+            await loadData(); // Reload todos
+        } catch (error) {
+            console.error('Failed to delete todo:', error);
+        }
     };
 
     const activeGroup = groups.find(g => g.id === activeId);
-    const displayTodos = activeId === 'all' ? todos : todos.filter(t => t.groupId === activeId);
+    const displayTodos = activeId === 'all' ? todos : todos.filter(t => t.group?.id === activeId);
 
     return (
         <div className="flex h-screen bg-white overflow-hidden">
@@ -46,7 +100,7 @@ export const TodoPage: React.FC = () => {
                     <div className="flex items-center gap-3">
                         <LayoutList className="text-indigo-600" size={20} />
                         <h1 className="text-lg font-bold text-slate-800">
-                            {activeId === 'all' ? '全部任务' : activeGroup?.name}
+                            {activeId === 'all' ? 'All Tasks' : activeGroup?.name}
                         </h1>
                         <span className="bg-slate-100 text-slate-500 text-xs px-2 py-0.5 rounded-full font-medium">
               {displayTodos.length}
@@ -64,7 +118,7 @@ export const TodoPage: React.FC = () => {
                                     type="text"
                                     value={inputValue}
                                     onChange={(e) => setInputValue(e.target.value)}
-                                    placeholder={`在 "${activeGroup?.name}" 中添加任务...`}
+                                    placeholder={`Add task in "${activeGroup?.name}"...`}
                                     className="w-full bg-white border-2 border-transparent shadow-sm rounded-2xl px-5 py-4 pr-16 focus:border-indigo-500 focus:ring-0 outline-none transition-all placeholder:text-slate-400"
                                 />
                                 <button className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all active:scale-95">
@@ -73,7 +127,7 @@ export const TodoPage: React.FC = () => {
                             </form>
                         ) : (
                             <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl text-blue-600 text-sm">
-                                💡 请先在左侧选择一个具体分组来添加任务。
+                                Please select a specific category from the left to add tasks.
                             </div>
                         )}
 
@@ -82,8 +136,8 @@ export const TodoPage: React.FC = () => {
                                 <TodoItem
                                     key={todo.id}
                                     todo={todo}
-                                    onToggle={(id) => {/* API logic */}}
-                                    onDelete={(id) => {/* API logic */}}
+                                    onToggle={handleToggleTodo}
+                                    onDelete={handleDeleteTodo}
                                 />
                             ))}
                             {displayTodos.length === 0 && (
@@ -91,7 +145,7 @@ export const TodoPage: React.FC = () => {
                                     <div className="bg-slate-100 p-4 rounded-full mb-4">
                                         <LayoutList size={40} className="text-slate-300" />
                                     </div>
-                                    <p>暂无任务，开始规划你的一天吧</p>
+                                    <p>No tasks yet, start planning your day!</p>
                                 </div>
                             )}
                         </div>

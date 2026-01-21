@@ -50,9 +50,9 @@ public class TodoService {
 
     // Create
     public Todo addTodo(Todo todo) {
-//        if (todo.getGroupId() != null) {
-//            todo.setGroup(groupRepository.getReferenceById(todo.getGroupId()));
-//        }
+        if (todo.getGroup().getId() != null) {
+            todo.setGroup(groupRepository.getReferenceById(todo.getGroup().getId()));
+        }
         return todoRepository.save(todo);
     }
 
