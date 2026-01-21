@@ -2,6 +2,7 @@ package cn.arorms.list.backend.pojo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,9 +21,13 @@ public class Todo {
 //    @JsonIdentityReference(alwaysAsId = true)
 //    private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Group group;
+
+//    @Transient
+//    private Long groupId;
 
     @Column(name = "title", nullable = false, length = 255)
     private String title;
