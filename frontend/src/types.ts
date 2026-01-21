@@ -1,14 +1,33 @@
 export interface Group {
-    id: string;
+    id: number;
     name: string;
     description: string;
 }
 
 export interface Todo {
-    id: string;
-    group: string;
+    id: number;
+    group: Group | null;
     title: string;
+    description: string;
     isCompleted: boolean;
-    createdAt: Date;
-    deadline: Date;
+    createdAt: string;
+    deadline: string;
+}
+
+export interface TodoCreateRequest {
+    title: string;
+    description?: string;
+    group?: {
+        id: number;
+    };
+}
+
+export interface PaginatedResponse<T> {
+    content: T[];
+    page: {
+        size: number;
+        number: number;
+        totalElements: number;
+        totalPages: number;
+    };
 }
