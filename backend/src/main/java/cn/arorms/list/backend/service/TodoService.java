@@ -42,6 +42,8 @@ public class TodoService {
         return todoRepository.findAll(sortedPageable);
     }
 
+
+
     // Get by ID
     public Todo getTodoById(Long id) {
         return todoRepository.findById(id)
@@ -50,7 +52,7 @@ public class TodoService {
 
     // Create
     public Todo addTodo(Todo todo) {
-        if (todo.getGroup().getId() != null) {
+        if (todo.getGroup() != null && todo.getGroup().getId() != null) {
             todo.setGroup(groupRepository.getReferenceById(todo.getGroup().getId()));
         }
         return todoRepository.save(todo);
@@ -77,5 +79,6 @@ public class TodoService {
         Optional<Todo> todoOptinal = todoRepository.findById(id);
         Todo todo = todoOptinal.orElseThrow(() -> new RuntimeException("Todo not found with ID:" + id));
         todoRepository.delete(todo);
+//        todoRepository.flush();
     }
 }

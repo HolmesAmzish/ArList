@@ -1,6 +1,6 @@
 import React from 'react';
 import { Hash, Plus, Folder } from 'lucide-react';
-import type {Group} from '../../types';
+import { Group } from '../../types';
 
 interface SidebarProps {
     groups: Group[];

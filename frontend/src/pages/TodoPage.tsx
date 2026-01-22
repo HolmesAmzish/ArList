@@ -47,11 +47,11 @@ export const TodoPage: React.FC = () => {
         e.preventDefault();
         if (!inputValue.trim()) return;
 
+        // Construct the request body
         const todoData: any = {
             title: inputValue,
             description: ''
         };
-
         if (typeof activeId === 'number') {
             todoData.group = { id: activeId };
         }
@@ -74,12 +74,24 @@ export const TodoPage: React.FC = () => {
         }
     };
 
+    // const handleDeleteTodo = async (id: number) => {
+    //     setTodos(prevState => prevState.filter((item) => item.id !== id));
+    //     try {
+    //         await todoApi.deleteTodo(id);
+    //     } catch (error) {
+    //         console.error('Failed to delete todo:', error);
+    //         await loadData(); // Reload todos
+    //         alert("Delete failed, reverting...");
+    //     }
+    // };
+
     const handleDeleteTodo = async (id: number) => {
+        setTodos(prevState => prevState.filter((item) => item.id !== id));
         try {
             await todoApi.deleteTodo(id);
             await loadData(); // Reload todos
         } catch (error) {
-            console.error('Failed to delete todo:', error);
+            console.error('Failed to toggle todo:', error);
         }
     };
 
@@ -111,25 +123,22 @@ export const TodoPage: React.FC = () => {
                 <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
                     <div className="max-w-4xl mx-auto space-y-6">
 
-                        {/* 只有在具体分组下才能快速添加任务 */}
-                        {activeId !== 'all' ? (
-                            <form onSubmit={handleAddTodo} className="relative group">
-                                <input
-                                    type="text"
-                                    value={inputValue}
-                                    onChange={(e) => setInputValue(e.target.value)}
-                                    placeholder={`Add task in "${activeGroup?.name}"...`}
-                                    className="w-full bg-white border-2 border-transparent shadow-sm rounded-2xl px-5 py-4 pr-16 focus:border-indigo-500 focus:ring-0 outline-none transition-all placeholder:text-slate-400"
-                                />
-                                <button className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all active:scale-95">
-                                    <Plus size={24} />
-                                </button>
-                            </form>
-                        ) : (
-                            <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl text-blue-600 text-sm">
-                                Please select a specific category from the left to add tasks.
-                            </div>
-                        )}
+                        <form onSubmit={handleAddTodo} className="relative group">
+                            <input
+                                type="text"
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                                placeholder={
+                                    activeId === 'all'
+                                        ? "Add uncategorized task..."
+                                        : `Add task in "${activeGroup?.name}"...`
+                                }
+                                className="w-full bg-white border-2 border-transparent shadow-sm rounded-2xl px-5 py-4 pr-16 focus:border-indigo-500 focus:ring-0 outline-none transition-all placeholder:text-slate-400"
+                            />
+                            <button className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all active:scale-95">
+                                <Plus size={24} />
+                            </button>
+                        </form>
 
                         <div className="space-y-3">
                             {displayTodos.map(todo => (
