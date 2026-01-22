@@ -22,13 +22,15 @@ public class GroupController {
     }
 
     @PostMapping()
-    public ResponseEntity<Void> addGroup(@RequestBody Group group) {
-        groupService.addGroup(group);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Group> addGroup(@RequestBody Group group) {
+        return ResponseEntity.ok(groupService.addGroup(group));
     }
 
-    @PutMapping()
-    public ResponseEntity<Group> updateGroup( @RequestBody Group group) {
+    @PutMapping("/{id}")
+    public ResponseEntity<Group> updateGroup(@ @RequestBody Group group) {
         return ResponseEntity.ok(groupService.updateGroup(group));
     }
+
+    @DeleteMapping("/{id}")
+    public Response
 }

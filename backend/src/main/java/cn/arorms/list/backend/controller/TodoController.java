@@ -30,6 +30,7 @@ public class TodoController {
         Pageable pageable = Pageable.ofSize(size).withPage(page);
         return todoService.getTodos(pageable);
     }
+
     // Get an entity detail by ID
     @GetMapping("/{id}")
     public Todo getTodoById(@PathVariable Long id) {
@@ -48,15 +49,15 @@ public class TodoController {
         return ResponseEntity.ok(todoService.toggleCompleted(id));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Todo> modifyTodo(@RequestBody Todo todo) {
+        return ResponseEntity.ok(todoService.updateTodo(todo));
+    }
+
     // Delete an entity
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTodo(@PathVariable Long id) {
         todoService.deleteTodo(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Todo> modifyTodo(@RequestBody Todo todo) {
-        return ResponseEntity.ok(todoService.updateTodo(todo));
+        return ResponseEntity.ok().build();
     }
 }

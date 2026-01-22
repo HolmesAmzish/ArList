@@ -37,9 +37,9 @@ public class GroupService {
         return groupRepository.save(group);
     }
 
-//    public void deleteGroup(Long id) {
-//        Optional<Group> groupOptional = groupRepository.findById(id);
-//        Group group = groupOptional.orElseThrow(() -> new RuntimeException("Group not found"));
-//        groupRepository.delete(group);
-//    }
+    public void deleteGroup(Long id) {
+        Optional<Group> groupOptional = groupRepository.findById(id);
+        Group group = groupOptional.orElseThrow(() -> new RuntimeException("Group not found"));
+        groupRepository.delete(group);
+    }
 }

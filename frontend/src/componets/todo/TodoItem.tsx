@@ -1,10 +1,10 @@
 import { CheckCircle2, Circle, Trash2 } from 'lucide-react';
-import type {Todo} from '../../types';
+import { Todo } from '../../types';
 
 interface TodoItemProps {
     todo: Todo;
-    onToggle: (id: string) => void;
-    onDelete: (id: string) => void;
+    onToggle: (id: number) => void;
+    onDelete: (id: number) => void;
 }
 
 export const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggle, onDelete }) => (
