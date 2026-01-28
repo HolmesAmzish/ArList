@@ -34,15 +34,16 @@ public class TodoService {
 
     // Get all
     public Page<Todo> getTodos(Pageable pageable) {
+        Sort sort = Sort.by(Sort.Order.asc("isCompleted"),
+                            Sort.Order.desc("createdAt"));
+
         Pageable sortedPageable = PageRequest.of(
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
-                Sort.by(Sort.Direction.DESC, "createdAt")
+                sort
         );
         return todoRepository.findAll(sortedPageable);
     }
-
-
 
     // Get by ID
     public Todo getTodoById(Long id) {

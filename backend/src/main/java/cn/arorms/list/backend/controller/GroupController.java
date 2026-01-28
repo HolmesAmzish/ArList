@@ -26,11 +26,14 @@ public class GroupController {
         return ResponseEntity.ok(groupService.addGroup(group));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Group> updateGroup(@ @RequestBody Group group) {
+    @PutMapping()
+    public ResponseEntity<Group> updateGroup(@RequestBody Group group) {
         return ResponseEntity.ok(groupService.updateGroup(group));
     }
 
     @DeleteMapping("/{id}")
-    public Response
+    public ResponseEntity<Void> deleteGroup(@PathVariable Long id) {
+        groupService.deleteGroup(id);
+        return ResponseEntity.ok().build();
+    }
 }

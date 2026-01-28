@@ -1,3 +1,10 @@
+v0.1.20260128
+1. Fix the api that sort the todos by isComplete tag
+
+v0.1.20260122
+1. Add Group tag for todos.
+2. Rebuild the front end for better experience.
+
 v0.1.20250717
 1. Update TodoEntity and TodoDto, add foreign key for User connection
 2. Add schedule attributes to Todo

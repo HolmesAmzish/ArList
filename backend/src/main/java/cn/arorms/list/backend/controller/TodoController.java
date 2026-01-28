@@ -49,8 +49,8 @@ public class TodoController {
         return ResponseEntity.ok(todoService.toggleCompleted(id));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Todo> modifyTodo(@RequestBody Todo todo) {
+    @PutMapping()
+    public ResponseEntity<Todo> updateTodo(@RequestBody Todo todo) {
         return ResponseEntity.ok(todoService.updateTodo(todo));
     }
 

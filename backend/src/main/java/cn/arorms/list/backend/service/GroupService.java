@@ -29,8 +29,6 @@ public class GroupService {
     }
 
     public Group updateGroup(Group group) {
-//        Group existingGroup = groupRepository.findById(id)
-//                .orElseThrow(() -> new NoSuchElementException("Group not found with id: " + id));
         if (!groupRepository.existsById(group.getId())) {
             throw new NoSuchElementException("Can not found exsiting group");
         }
