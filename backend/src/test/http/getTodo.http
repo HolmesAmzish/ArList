@@ -1,0 +1,6 @@
+### Get todos
+GET http://localhost:8080/api/todo
+
+### Get todos by group
+GET http://localhost:8080/api/todo
+    ?groupId=6

@@ -33,7 +33,7 @@ public class TodoService {
     }
 
     // Get all
-    public Page<Todo> getTodos(Pageable pageable) {
+    public Page<Todo> getTodos(Pageable pageable, Long groupId) {
         Sort sort = Sort.by(Sort.Order.asc("isCompleted"),
                             Sort.Order.desc("createdAt"));
 
@@ -42,6 +42,11 @@ public class TodoService {
                 pageable.getPageSize(),
                 sort
         );
+
+        if (groupId != null) {
+            return todoRepository.findByGroupId(groupId, sortedPageable);
+        }
+
         return todoRepository.findAll(sortedPageable);
     }
 

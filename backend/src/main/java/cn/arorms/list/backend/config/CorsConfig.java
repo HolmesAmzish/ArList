@@ -20,7 +20,7 @@ public class CorsConfig implements org.springframework.web.servlet.config.annota
     @Override
     public void addCorsMappings(org.springframework.web.servlet.config.annotation.CorsRegistry registry) {
         registry.addMapping("/**") // Apply to all endpoints
-                .allowedOrigins("http://localhost:5173", "http://192.168.0.123:5173", "http://list.arorms.cn")
+                .allowedOrigins("http://localhost:5173", "http://192.168.0.110:5173", "http://list.arorms.cn")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)

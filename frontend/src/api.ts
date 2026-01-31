@@ -49,9 +49,6 @@ export const todoApi = {
     getAllTodos: (page = 0, size = 10): Promise<PaginatedResponse<Todo>> =>
         apiRequest(`/todo?page=${page}&size=${size}`),
 
-    getTodoById: (id: number): Promise<Todo> =>
-        apiRequest(`/todo/${id}`),
-
     addTodo: (todo: TodoCreateRequest): Promise<Todo> =>
         apiRequest('/todo/add', {
             method: 'POST',
@@ -68,9 +65,9 @@ export const todoApi = {
             method: 'DELETE',
         }),
 
-    updateTodo: (id: number, todo: Partial<Todo>): Promise<Todo> =>
-        apiRequest(`/todo/${id}`, {
+    updateTodo: (todo: Todo): Promise<Todo> =>
+        apiRequest(`/todo`, {
             method: 'PUT',
-            body: JSON.stringify({ ...todo, id }),
+            body: JSON.stringify({ ...todo }),
         }),
 };
