@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Sidebar } from '../componets/todo/Sidebar.tsx';
 import { TodoItem } from '../componets/todo/TodoItem.tsx';
+import { EditTodoModal } from '../componets/todo/EditTodoModal.tsx';
 import { Plus, LayoutList } from 'lucide-react';
-import type {Group, Todo} from '../types.ts';
+import type {Group, Todo, TodoCreateRequest} from '../types.ts';
 import { groupApi, todoApi } from '../api.ts';
 
 export const TodoPage: React.FC = () => {
@@ -11,6 +12,8 @@ export const TodoPage: React.FC = () => {
     const [activeId, setActiveId] = useState<string | number>('all');
     const [inputValue, setInputValue] = useState('');
     const [loading, setLoading] = useState(true);
+    const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         loadData();
@@ -48,7 +51,7 @@ export const TodoPage: React.FC = () => {
         if (!inputValue.trim()) return;
 
         // Construct the request body
-        const todoData: any = {
+        const todoData: TodoCreateRequest = {
             title: inputValue,
             description: ''
         };
@@ -92,6 +95,23 @@ export const TodoPage: React.FC = () => {
             await loadData(); // Reload todos
         } catch (error) {
             console.error('Failed to toggle todo:', error);
+        }
+    };
+
+    const handleModifyTodo = (id: number) => {
+        const todo = todos.find(t => t.id === id);
+        if (todo) {
+            setEditingTodo(todo);
+            setIsModalOpen(true);
+        }
+    };
+
+    const handleSaveTodo = async (updatedTodo: Partial<Todo>) => {
+        try {
+            await todoApi.updateTodo(updatedTodo);
+            await loadData(); // Reload todos
+        } catch (error) {
+            console.error('Failed to update todo:', error);
         }
     };
 
@@ -147,6 +167,7 @@ export const TodoPage: React.FC = () => {
                                     todo={todo}
                                     onToggle={handleToggleTodo}
                                     onDelete={handleDeleteTodo}
+                                    onModify={handleModifyTodo}
                                 />
                             ))}
                             {displayTodos.length === 0 && (
@@ -161,6 +182,17 @@ export const TodoPage: React.FC = () => {
                     </div>
                 </div>
             </main>
+
+            <EditTodoModal
+                todo={editingTodo}
+                groups={groups}
+                isOpen={isModalOpen}
+                onClose={() => {
+                    setIsModalOpen(false);
+                    setEditingTodo(null);
+                }}
+                onSave={handleSaveTodo}
+            />
         </div>
     );
 };

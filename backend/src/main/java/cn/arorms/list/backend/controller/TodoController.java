@@ -17,18 +17,21 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/todo")
 public class TodoController {
     private final TodoService todoService;
+
     @Autowired
     public TodoController(TodoService todoService) {
         this.todoService = todoService;
     }
+
     // Get all todos with pagination
     @GetMapping()
     public Page<Todo> getAllTodos(
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "groupId", required = false) Long groupId
     ) {
         Pageable pageable = Pageable.ofSize(size).withPage(page);
-        return todoService.getTodos(pageable);
+        return todoService.getTodos(pageable, groupId);
     }
 
     // Get an entity detail by ID
