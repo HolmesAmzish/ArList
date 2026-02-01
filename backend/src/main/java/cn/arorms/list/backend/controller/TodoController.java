@@ -27,7 +27,7 @@ public class TodoController {
     @GetMapping()
     public Page<Todo> getAllTodos(
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "size", defaultValue = "20") int size,
             @RequestParam(value = "groupId", required = false) Long groupId
     ) {
         Pageable pageable = Pageable.ofSize(size).withPage(page);

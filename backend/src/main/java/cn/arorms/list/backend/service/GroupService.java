@@ -37,7 +37,7 @@ public class GroupService {
 
     public void deleteGroup(Long id) {
         Optional<Group> groupOptional = groupRepository.findById(id);
-        Group group = groupOptional.orElseThrow(() -> new RuntimeException("Group not found"));
+        Group group = groupOptional.orElseThrow(() -> new RuntimeException("Group not found with ID: " + id));
         groupRepository.delete(group);
     }
 }

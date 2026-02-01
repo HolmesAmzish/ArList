@@ -7,6 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
+/**
+ * GroupController
+ * @version 1.0 2026-02-01
+ * @author Cacciatore
+ */
 @RestController @RequestMapping("/api/group")
 public class GroupController {
     @Autowired

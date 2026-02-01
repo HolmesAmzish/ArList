@@ -1,5 +1,8 @@
 v0.1.20260131
 1. Add the todo modification
+2. Add the group modification
+3. Add pagination
+4. Add dynamic ui for phone view
 
 v0.1.20260128
 1. Fix the api that sort the todos by isComplete tag

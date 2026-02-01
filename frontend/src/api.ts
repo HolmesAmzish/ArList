@@ -42,11 +42,24 @@ export const groupApi = {
             method: 'PUT',
             body: JSON.stringify(group),
         }),
+
+    deleteGroup: (id: number): Promise<void> =>
+        apiRequest(`/group/${id}`, {
+            method: 'DELETE',
+        }),
 };
 
 // Todo API
 export const todoApi = {
-    getAllTodos: (page = 0, size = 10): Promise<PaginatedResponse<Todo>> =>
+    getTodos: (page = 0, size = 20, groupId?: number): Promise<PaginatedResponse<Todo>> => {
+        let url = `/todo?page=${page}&size=${size}`;
+        if (groupId !== undefined) {
+            url += `&groupId=${groupId}`;
+        }
+        return apiRequest(url);
+    },
+
+    getAllTodos: (page = 0, size = 20): Promise<PaginatedResponse<Todo>> =>
         apiRequest(`/todo?page=${page}&size=${size}`),
 
     addTodo: (todo: TodoCreateRequest): Promise<Todo> =>
