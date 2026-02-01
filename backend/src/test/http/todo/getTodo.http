@@ -3,4 +3,8 @@ GET http://localhost:8080/api/todo
 
 ### Get todos by group
 GET http://localhost:8080/api/todo
-    ?groupId=6
+    ?groupId=6&page=0&size=20
+
+### Get todos by Page
+GET http://localhost:8080/api/todo
+    ?page=0&size=20

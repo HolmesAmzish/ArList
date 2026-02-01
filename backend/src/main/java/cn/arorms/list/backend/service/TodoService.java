@@ -85,6 +85,5 @@ public class TodoService {
         Optional<Todo> todoOptinal = todoRepository.findById(id);
         Todo todo = todoOptinal.orElseThrow(() -> new RuntimeException("Todo not found with ID:" + id));
         todoRepository.delete(todo);
-//        todoRepository.flush();
     }
 }
