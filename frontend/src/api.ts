@@ -1,7 +1,5 @@
 import type { Group, Todo, TodoCreateRequest, PaginatedResponse } from './types';
 
-const API_BASE_URL = 'http://localhost:8080/api';
-
 class ApiError extends Error {
     constructor(public status: number, message: string) {
         super(message);
@@ -10,7 +8,7 @@ class ApiError extends Error {
 }
 
 async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const url = `${API_BASE_URL}${endpoint}`;
+    const url = `${endpoint}`;
     const response = await fetch(url, {
         headers: {
             'Content-Type': 'application/json',
@@ -29,22 +27,22 @@ async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promi
 // Group API
 export const groupApi = {
     getAllGroups: (): Promise<Group[]> =>
-        apiRequest('/group'),
+        apiRequest('/api/group'),
 
     addGroup: (group: Omit<Group, 'id'>): Promise<void> =>
-        apiRequest('/group', {
+        apiRequest('/api/group', {
             method: 'POST',
             body: JSON.stringify(group),
         }),
 
     updateGroup: (group: Group): Promise<Group> =>
-        apiRequest('/group', {
+        apiRequest('/api/group', {
             method: 'PUT',
             body: JSON.stringify(group),
         }),
 
     deleteGroup: (id: number): Promise<void> =>
-        apiRequest(`/group/${id}`, {
+        apiRequest(`/api/group/${id}`, {
             method: 'DELETE',
         }),
 };
@@ -52,7 +50,7 @@ export const groupApi = {
 // Todo API
 export const todoApi = {
     getTodos: (page = 0, size = 20, groupId?: number): Promise<PaginatedResponse<Todo>> => {
-        let url = `/todo?page=${page}&size=${size}`;
+        let url = `/api/todo?page=${page}&size=${size}`;
         if (groupId !== undefined) {
             url += `&groupId=${groupId}`;
         }
@@ -60,26 +58,26 @@ export const todoApi = {
     },
 
     getAllTodos: (page = 0, size = 20): Promise<PaginatedResponse<Todo>> =>
-        apiRequest(`/todo?page=${page}&size=${size}`),
+        apiRequest(`/api/todo?page=${page}&size=${size}`),
 
     addTodo: (todo: TodoCreateRequest): Promise<Todo> =>
-        apiRequest('/todo/add', {
+        apiRequest('/api/todo/add', {
             method: 'POST',
             body: JSON.stringify(todo),
         }),
 
     toggleCompleteTodo: (id: number): Promise<Todo> =>
-        apiRequest(`/todo/toggleComplete/${id}`, {
+        apiRequest(`/api/todo/toggleComplete/${id}`, {
             method: 'PUT',
         }),
 
     deleteTodo: (id: number): Promise<void> =>
-        apiRequest(`/todo/${id}`, {
+        apiRequest(`/api/todo/${id}`, {
             method: 'DELETE',
         }),
 
     updateTodo: (todo: Todo): Promise<Todo> =>
-        apiRequest(`/todo`, {
+        apiRequest(`/api/todo`, {
             method: 'PUT',
             body: JSON.stringify({ ...todo }),
         }),
