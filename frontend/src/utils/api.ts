@@ -1,4 +1,4 @@
-import type { Group, Todo, TodoCreateRequest, PaginatedResponse } from './types';
+import type { Group, Todo, TodoCreateRequest, PaginatedResponse } from '../types.ts';
 
 class ApiError extends Error {
     constructor(public status: number, message: string) {

@@ -47,8 +47,8 @@ public class Todo {
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
-        if (this.deadline == null) {
-            this.deadline = LocalDateTime.now().plusDays(1);
-        }
+//        if (this.deadline == null) {
+//            this.deadline = LocalDateTime.now().plusDays(1);
+//        }
     }
 }

@@ -6,7 +6,7 @@ import { EditTodoModal } from '../componets/todo/EditTodoModal.tsx';
 import { EditGroupModal } from '../componets/todo/EditGroupModal.tsx';
 import { Plus, LayoutList, Loader, Menu, X } from 'lucide-react';
 import type {Group, Todo, TodoCreateRequest, PaginatedResponse} from '../types.ts';
-import { groupApi, todoApi } from '../api.ts';
+import { groupApi, todoApi } from '../utils/api.ts';
 
 export const TodoPage: React.FC = () => {
     const [groups, setGroups] = useState<Group[]>([]);
@@ -218,7 +218,7 @@ export const TodoPage: React.FC = () => {
     const displayTodos = todos;
 
     return (
-        <div className="flex h-screen bg-white overflow-hidden">
+        <div className="flex h-screen bg-white dark:bg-slate-950 overflow-hidden">
             {/* Sidebar for desktop, drawer for mobile */}
             <div className={`hidden md:flex ${isSidebarOpen ? 'flex' : 'hidden'} md:relative md:flex`}>
                 <Sidebar
@@ -238,11 +238,11 @@ export const TodoPage: React.FC = () => {
             {/* Mobile sidebar overlay */}
             {isSidebarOpen && (
                 <div 
-                    className="md:hidden fixed inset-0 bg-black/50 z-20"
+                    className="md:hidden fixed inset-0 bg-black/50 dark:bg-black/70 z-20"
                     onClick={() => setIsSidebarOpen(false)}
                 />
             )}
-            <div className={`md:hidden fixed top-0 left-0 h-full w-72 bg-slate-50 border-r border-slate-200 z-30 transform transition-transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+            <div className={`md:hidden fixed top-0 left-0 h-full w-72 bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 z-30 transform transition-transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
                 <Sidebar
                     groups={groups}
                     activeId={activeId}
@@ -256,20 +256,20 @@ export const TodoPage: React.FC = () => {
                 />
             </div>
 
-            <main className="flex-1 flex flex-col bg-slate-50/50">
-                <header className="h-16 px-4 md:px-8 flex items-center justify-between border-b border-slate-200 bg-white/80 backdrop-blur-md sticky top-0 z-10">
+            <main className="flex-1 flex flex-col bg-slate-50/50 dark:bg-slate-900/50">
+                <header className="h-16 px-4 md:px-8 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-10">
                     <div className="flex items-center gap-3">
                         <button 
-                            className="md:hidden p-2 text-slate-600 hover:bg-slate-200 rounded-lg"
+                            className="md:hidden p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg"
                             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                         >
                             {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
                         </button>
-                        <LayoutList className="text-indigo-600" size={20} />
-                        <h1 className="text-lg font-bold text-slate-800">
+                        <LayoutList className="text-indigo-600 dark:text-indigo-400" size={20} />
+                        <h1 className="text-lg font-bold text-slate-800 dark:text-slate-200">
                             {activeId === 'all' ? 'All Tasks' : activeGroup?.name}
                         </h1>
-                        <span className="bg-slate-100 text-slate-500 text-xs px-2 py-0.5 rounded-full font-medium">
+                        <span className="bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-xs px-2 py-0.5 rounded-full font-medium">
               {pagination.totalElements}
             </span>
                     </div>
@@ -288,9 +288,9 @@ export const TodoPage: React.FC = () => {
                                         ? "Add uncategorized task..."
                                         : `Add task in "${activeGroup?.name}"...`
                                 }
-                                className="w-full bg-white border-2 border-transparent shadow-sm rounded-2xl px-5 py-4 pr-16 focus:border-indigo-500 focus:ring-0 outline-none transition-all placeholder:text-slate-400"
+                                className="w-full bg-white dark:bg-slate-800 border-2 border-transparent dark:border-slate-700 shadow-sm dark:shadow-slate-900/50 rounded-2xl px-5 py-4 pr-16 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-0 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
                             />
-                            <button className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all active:scale-95">
+                            <button className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-indigo-600 dark:bg-indigo-500 text-white rounded-xl hover:bg-indigo-700 dark:hover:bg-indigo-600 shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30 transition-all active:scale-95">
                                 <Plus size={24} />
                             </button>
                         </form>
@@ -311,9 +311,9 @@ export const TodoPage: React.FC = () => {
                                 </div>
                             )}
                             {!loading && displayTodos.length === 0 && (
-                                <div className="flex flex-col items-center justify-center py-20 text-slate-400">
-                                    <div className="bg-slate-100 p-4 rounded-full mb-4">
-                                        <LayoutList size={40} className="text-slate-300" />
+                                <div className="flex flex-col items-center justify-center py-20 text-slate-400 dark:text-slate-500">
+                                    <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-full mb-4">
+                                        <LayoutList size={40} className="text-slate-300 dark:text-slate-600" />
                                     </div>
                                     <p>No tasks yet, start planning your day!</p>
                                 </div>
@@ -323,7 +323,7 @@ export const TodoPage: React.FC = () => {
                                     <button
                                         onClick={handleLoadMore}
                                         disabled={loadingMore}
-                                        className="px-6 py-2 bg-white border border-slate-300 rounded-xl text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                        className="px-6 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                     >
                                         {loadingMore ? (
                                             <span className="flex items-center gap-2">
