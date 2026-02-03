@@ -20,11 +20,16 @@ Copy keys-example.properties to a new file named keys.properties.
 Fill in your specific keys and credentials in keys.properties.
 
 3. Run the Backend
-Bash
+
+```Bash
 cd backend
 mvn spring-boot:run
+```
+
 4. Run the Frontend
-Bash
+
+```Bash
 cd frontend
 npm install
 npm run dev
+```
