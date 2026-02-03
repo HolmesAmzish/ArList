@@ -1,10 +1,13 @@
-v0.3
+v0.3.1
+1. Add readme file
+
+v0.3.0
 1. Add order of group
 2. fix the dark theme of adding todo text color
 3. Add alert window when deleting a todo
 4. Add model window when adding a group
 
-v0.2
+v0.2.0
 1. Add Dark theme
 
 v0.1.20260131
