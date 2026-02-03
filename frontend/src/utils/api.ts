@@ -29,7 +29,7 @@ export const groupApi = {
     getAllGroups: (): Promise<Group[]> =>
         apiRequest('/api/group'),
 
-    addGroup: (group: Omit<Group, 'id'>): Promise<void> =>
+    addGroup: (group: { name: string; description: string }): Promise<void> =>
         apiRequest('/api/group', {
             method: 'POST',
             body: JSON.stringify(group),
@@ -37,6 +37,12 @@ export const groupApi = {
 
     updateGroup: (group: Group): Promise<Group> =>
         apiRequest('/api/group', {
+            method: 'PUT',
+            body: JSON.stringify(group),
+        }),
+
+    updateGroupOrder: (group: Group): Promise<Group> =>
+        apiRequest('/api/group/updateOrder', {
             method: 'PUT',
             body: JSON.stringify(group),
         }),

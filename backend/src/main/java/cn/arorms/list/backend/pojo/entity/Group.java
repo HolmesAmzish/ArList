@@ -12,5 +12,8 @@ public class Group {
     @Column(nullable = false)
     private String name;
 
+    @Column(name = "order_index")
+    private int orderIndex;
+
     private String description;
 }

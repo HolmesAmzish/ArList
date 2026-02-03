@@ -1,0 +1,9 @@
+PUT http://localhost:8080/api/group/updateOrder
+Content-Type: application/json
+
+{
+  "id": 6,
+  "name": "ELDEN RING",
+  "orderIndex": 6,
+  "description": "lover ahead"
+}

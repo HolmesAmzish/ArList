@@ -1,0 +1,68 @@
+I add a function that the group has their order index, and for the best practice that I define the largest number means newer group, so some group which I haven't changed will be small number, and the active one will have large number, the new added one should be the largest number, and the position is on the top. the orderIndex is an int attribute and define in group class.
+here's the group controller
+    // Change Order index
+    @PutMapping("/updateOrder")
+    public ResponseEntity<Group> updateOrder(@RequestBody Group group) {
+        return ResponseEntity.ok(groupService.updateGroupOrder(group));
+    }
+
+    // Modify the group
+    @PutMapping()
+    public ResponseEntity<Group> updateGroup(@RequestBody Group group) {
+        return ResponseEntity.ok(groupService.updateGroup(group));
+    }
+the normal update api shouldn't have change order index for this is a action involves other groups so need a special api
+here is the service logic
+public Group addGroup(Group group) {
+        if (group.getId() != null) {
+            throw new IllegalArgumentException("New group cannot have an ID!");
+        }
+        int count = (int)groupRepository.count();
+        group.setOrderIndex(count);
+
+        return groupRepository.save(group);
+    }
+
+    public Group updateGroup(Group group) {
+        if (!groupRepository.existsById(group.getId())) {
+            throw new NoSuchElementException("Can not found exsiting group");
+        }
+        return groupRepository.save(group);
+    }
+
+    @Transactional
+    public Group updateGroupOrder(Group group) {
+
+        int originalOrderIndex = groupRepository.findById(group.getId())
+                .map(Group::getOrderIndex)
+                .orElseThrow(() -> new NoSuchElementException("Can not found exsiting group with id: " + group.getId()));
+
+        int changedOrderIndex = group.getOrderIndex();
+
+        // Shift related group order index before update the target group.
+        if (originalOrderIndex < changedOrderIndex) {
+            groupRepository.shiftBackward(originalOrderIndex + 1, changedOrderIndex);
+        } else {
+            groupRepository.shiftForward(changedOrderIndex, originalOrderIndex - 1);
+        }
+
+
+        return groupRepository.save(group);
+    }
+public interface GroupRepository extends JpaRepository<Group, Long> {
+
+    @Modifying
+    @Query("UPDATE Group g SET g.orderIndex = g.orderIndex + 1 " +
+            "WHERE g.orderIndex >= :start AND g.orderIndex <= :end")
+    void shiftForward(int start, int end);
+
+    @Modifying
+    @Query("UPDATE Group g SET g.orderIndex = g.orderIndex - 1 " +
+            "WHERE g.orderIndex >= :start AND g.orderIndex <= :end")
+    void shiftBackward(int start, int end);
+}
+so what I need to do is that make the sidebar group can be drag and drop to change their position for user.
+
+Here's some problem:
+That there has the dropdown menu button and can work, I can click to see menu but I can not see the button in light mode, and that's all right, maybe we should switch this button to the top of page justify-right, and be aware of that it only appear when I am in a group page.
+When I drag the group, I wanna just hide the item in the side bar instead of blur it

@@ -31,6 +31,11 @@ public class GroupController {
     public ResponseEntity<Group> addGroup(@RequestBody Group group) {
         return ResponseEntity.ok(groupService.addGroup(group));
     }
+    // Change Order index
+    @PutMapping("/updateOrder")
+    public ResponseEntity<Group> updateOrder(@RequestBody Group group) {
+        return ResponseEntity.ok(groupService.updateGroupOrder(group));
+    }
 
     // Modify the group
     @PutMapping()

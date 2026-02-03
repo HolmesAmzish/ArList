@@ -2,6 +2,7 @@ export interface Group {
     id: number;
     name: string;
     description: string;
+    orderIndex: number | null;
 }
 
 export interface Todo {

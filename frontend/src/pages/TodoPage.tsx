@@ -19,6 +19,7 @@ export const TodoPage: React.FC = () => {
     const [isTodoModalOpen, setIsTodoModalOpen] = useState(false);
     const [editingGroup, setEditingGroup] = useState<Group | null>(null);
     const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
+    const [isAddingGroup, setIsAddingGroup] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [pagination, setPagination] = useState({
         page: 0,
@@ -78,15 +79,21 @@ export const TodoPage: React.FC = () => {
         }
     };
 
-    const handleAddGroup = async () => {
-        const name = prompt('Enter group name:');
-        if (!name?.trim()) return;
+    const handleAddGroup = () => {
+        setIsAddingGroup(true);
+        setIsGroupModalOpen(true);
+    };
 
+    const handleSaveNewGroup = async (newGroup: Partial<Group>) => {
         try {
-            await groupApi.addGroup({ name, description: '' });
+            await groupApi.addGroup({ 
+                name: newGroup.name || '', 
+                description: newGroup.description || '' 
+            });
             await loadGroups(); // Reload groups
         } catch (error) {
             console.error('Failed to add group:', error);
+            throw error; // Re-throw to let modal handle error state
         }
     };
 
@@ -128,6 +135,9 @@ export const TodoPage: React.FC = () => {
     };
 
     const handleDeleteTodo = async (id: number) => {
+        if (!window.confirm('Are you sure you want to delete this todo?')) {
+            return;
+        }
         // Optimistically remove
         setTodos(prev => prev.filter(todo => todo.id !== id));
         try {
@@ -171,18 +181,44 @@ export const TodoPage: React.FC = () => {
 
     const handleSaveGroup = async (updatedGroupPartial: Partial<Group>) => {
         try {
-            // Find existing group to merge
-            const existingGroup = groups.find(g => g.id === updatedGroupPartial.id);
-            if (!existingGroup) {
-                console.error('Group not found:', updatedGroupPartial.id);
-                return;
+            if (isAddingGroup) {
+                // This is a new group creation
+                await handleSaveNewGroup(updatedGroupPartial);
+            } else {
+                // This is an existing group update
+                const existingGroup = groups.find(g => g.id === updatedGroupPartial.id);
+                if (!existingGroup) {
+                    console.error('Group not found:', updatedGroupPartial.id);
+                    return;
+                }
+                const updatedGroup = { ...existingGroup, ...updatedGroupPartial } as Group;
+                await groupApi.updateGroup(updatedGroup);
+                // Reload groups
+                await loadGroups();
             }
-            const updatedGroup = { ...existingGroup, ...updatedGroupPartial } as Group;
-            await groupApi.updateGroup(updatedGroup);
-            // Reload groups
+        } catch (error) {
+            console.error('Failed to save group:', error);
+            throw error; // Re-throw to let modal handle error state
+        }
+    };
+
+    const handleReorderGroups = async (reorderedGroups: Group[]) => {
+        try {
+            // Update local state immediately for responsive UI
+            setGroups(reorderedGroups);
+            
+            // Send update for each group that changed position
+            // We need to update the orderIndex for all groups since positions changed
+            for (const group of reorderedGroups) {
+                await groupApi.updateGroupOrder(group);
+            }
+            
+            // Reload groups to ensure consistency with backend
             await loadGroups();
         } catch (error) {
-            console.error('Failed to update group:', error);
+            console.error('Failed to reorder groups:', error);
+            // Reload groups to revert to correct state
+            await loadGroups();
         }
     };
 
@@ -232,6 +268,7 @@ export const TodoPage: React.FC = () => {
                     onAddGroup={handleAddGroup}
                     onModifyGroup={handleModifyGroup}
                     onDeleteGroup={handleDeleteGroup}
+                    onReorderGroups={handleReorderGroups}
                 />
             </div>
             
@@ -253,6 +290,7 @@ export const TodoPage: React.FC = () => {
                     onAddGroup={handleAddGroup}
                     onModifyGroup={handleModifyGroup}
                     onDeleteGroup={handleDeleteGroup}
+                    onReorderGroups={handleReorderGroups}
                 />
             </div>
 
@@ -288,7 +326,7 @@ export const TodoPage: React.FC = () => {
                                         ? "Add uncategorized task..."
                                         : `Add task in "${activeGroup?.name}"...`
                                 }
-                                className="w-full bg-white dark:bg-slate-800 border-2 border-transparent dark:border-slate-700 shadow-sm dark:shadow-slate-900/50 rounded-2xl px-5 py-4 pr-16 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-0 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                                className="w-full dark:text-slate-300 bg-white dark:bg-slate-800 border-2 border-transparent dark:border-slate-700 shadow-sm dark:shadow-slate-900/50 rounded-2xl px-5 py-4 pr-16 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-0 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
                             />
                             <button className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-indigo-600 dark:bg-indigo-500 text-white rounded-xl hover:bg-indigo-700 dark:hover:bg-indigo-600 shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30 transition-all active:scale-95">
                                 <Plus size={24} />
@@ -358,9 +396,11 @@ export const TodoPage: React.FC = () => {
                 onClose={() => {
                     setIsGroupModalOpen(false);
                     setEditingGroup(null);
+                    setIsAddingGroup(false);
                 }}
                 onSave={handleSaveGroup}
                 onDelete={handleDeleteGroup}
+                isCreating={isAddingGroup}
             />
         </div>
     );

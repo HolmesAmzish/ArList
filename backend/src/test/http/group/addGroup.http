@@ -1,2 +1,8 @@
 ### Add a group
-POST http://localhost:8080/api/group/
+POST http://localhost:8080/api/group
+Content-Type: application/json
+
+{
+  "name": "Pornhub",
+  "description": "fuck every tight pussy"
+}

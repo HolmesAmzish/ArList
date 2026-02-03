@@ -26,9 +26,6 @@ public class Todo {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Group group;
 
-//    @Transient
-//    private Long groupId;
-
     @Column(name = "title", nullable = false, length = 255)
     private String title;
 
@@ -39,16 +36,9 @@ public class Todo {
     private Boolean isCompleted = false;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "deadline")
     private LocalDateTime deadline;
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-//        if (this.deadline == null) {
-//            this.deadline = LocalDateTime.now().plusDays(1);
-//        }
-    }
 }
