@@ -29,7 +29,5 @@ jobs:
 
             echo "Building Backend..."
             cd ../backend
-            chmod +x mvnw
-            ./mvnw clean package -DskipTests
             
-            pm2 restart arlist-backend || pm2 start "java -jar target/*.jar" --name "arlist-backend"
+            pm2 restart arlist-backend || pm2 start "mvn spring-boot:run" --name "arlist-backend"
