@@ -1,4 +1,2 @@
-### Get groups
-GET http://localhost:8080/api/group
+GET http://localhost:8080/api/user/me
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzZWxmIiwic3ViIjoiQ2FjY2lhdG9yZSIsImV4cCI6MTc3MjAyMDU2OCwidXNlcl9pZCI6MSwiaWF0IjoxNzcwODEwOTY4fQ.07aEpqOIIGjM0anheuIIXxTiEnkYNSiJ47jmBhTCfgE
-Content-Type: application/json

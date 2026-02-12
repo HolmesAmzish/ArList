@@ -4,11 +4,15 @@ import { Sidebar } from '../componets/todo/Sidebar.tsx';
 import { TodoItem } from '../componets/todo/TodoItem.tsx';
 import { EditTodoModal } from '../componets/todo/EditTodoModal.tsx';
 import { EditGroupModal } from '../componets/todo/EditGroupModal.tsx';
-import { Plus, LayoutList, Loader, Menu, X } from 'lucide-react';
+import { Plus, LayoutList, Loader, Menu, X, LogOut } from 'lucide-react';
 import type {Group, Todo, TodoCreateRequest, PaginatedResponse} from '../types.ts';
-import { groupApi, todoApi } from '../utils/api.ts';
+import { groupApi, todoApi, authApi } from '../utils/api.ts';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 export const TodoPage: React.FC = () => {
+    const navigate = useNavigate();
+    const { logout: authContextLogout } = useAuth();
     const [groups, setGroups] = useState<Group[]>([]);
     const [todos, setTodos] = useState<Todo[]>([]);
     const [activeId, setActiveId] = useState<string | number>('all');
@@ -249,6 +253,12 @@ export const TodoPage: React.FC = () => {
         }
     };
 
+    const handleLogout = () => {
+        authApi.logout();
+        authContextLogout();
+        navigate('/login');
+    };
+
     const activeGroup = groups.find(g => g.id === activeId);
     // No need to filter client-side since API returns filtered results
     const displayTodos = todos;
@@ -311,6 +321,14 @@ export const TodoPage: React.FC = () => {
               {pagination.totalElements}
             </span>
                     </div>
+                    <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-2 px-4 py-2 text-sm text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                        title="Logout"
+                    >
+                        <LogOut size={16} />
+                        <span className="hidden md:inline">Logout</span>
+                    </button>
                 </header>
 
                 <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
