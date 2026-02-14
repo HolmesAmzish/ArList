@@ -3,14 +3,13 @@ import { TodoPage } from './pages/TodoPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import { ThemeProvider } from './contexts/ThemeContext';
-import { registerSW } from 'virtual:pwa-register';
-
-registerSW({ immediate: true });
+// import { registerSW } from 'virtual:pwa-register';
+// registerSW({ immediate: true });
 
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated } = useAuth(); // 这里的状态是实时的
+  const { isAuthenticated } = useAuth();
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
 };
 
@@ -21,7 +20,7 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
 
 function App() {
   return (
-      <AuthProvider> {/* 必须包裹在外面 */}
+      <AuthProvider>
         <ThemeProvider>
           <Router>
             <Routes>

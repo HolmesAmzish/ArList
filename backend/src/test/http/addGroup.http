@@ -1,8 +1,10 @@
 ### Add a group
-POST http://localhost:8080/api/group
+POST http://{{host}}/api/group
+Authorization: Bearer {{jwt_token}}
 Content-Type: application/json
 
 {
+  "id": 99,
   "name": "Pornhub",
   "description": "fuck every tight pussy"
 }

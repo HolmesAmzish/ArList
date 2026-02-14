@@ -281,7 +281,7 @@ export const TodoPage: React.FC = () => {
                     onReorderGroups={handleReorderGroups}
                 />
             </div>
-            
+
             {/* Mobile sidebar overlay */}
             {isSidebarOpen && (
                 <div 
@@ -307,7 +307,7 @@ export const TodoPage: React.FC = () => {
             <main className="flex-1 flex flex-col bg-slate-50/50 dark:bg-slate-900/50">
                 <header className="h-16 px-4 md:px-8 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-10">
                     <div className="flex items-center gap-3">
-                        <button 
+                        <button
                             className="md:hidden p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg"
                             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                         >
@@ -346,8 +346,9 @@ export const TodoPage: React.FC = () => {
                                 }
                                 className="w-full dark:text-slate-300 bg-white dark:bg-slate-800 border-2 border-transparent dark:border-slate-700 shadow-sm dark:shadow-slate-900/50 rounded-2xl px-5 py-4 pr-16 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-0 outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
                             />
-                            <button className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-indigo-600 dark:bg-indigo-500 text-white rounded-xl hover:bg-indigo-700 dark:hover:bg-indigo-600 shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30 transition-all active:scale-95">
-                                <Plus size={24} />
+                            <button
+                                className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-indigo-600 dark:bg-indigo-500 text-white rounded-xl hover:bg-indigo-700 dark:hover:bg-indigo-600 shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30 transition-all active:scale-95">
+                                <Plus size={24}/>
                             </button>
                         </form>
 
@@ -363,13 +364,14 @@ export const TodoPage: React.FC = () => {
                             ))}
                             {loading && (
                                 <div className="flex justify-center py-8">
-                                    <Loader className="animate-spin text-indigo-600" size={24} />
+                                    <Loader className="animate-spin text-indigo-600" size={24}/>
                                 </div>
                             )}
                             {!loading && displayTodos.length === 0 && (
-                                <div className="flex flex-col items-center justify-center py-20 text-slate-400 dark:text-slate-500">
+                                <div
+                                    className="flex flex-col items-center justify-center py-20 text-slate-400 dark:text-slate-500">
                                     <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-full mb-4">
-                                        <LayoutList size={40} className="text-slate-300 dark:text-slate-600" />
+                                        <LayoutList size={40} className="text-slate-300 dark:text-slate-600"/>
                                     </div>
                                     <p>No tasks yet, start planning your day!</p>
                                 </div>
@@ -383,7 +385,7 @@ export const TodoPage: React.FC = () => {
                                     >
                                         {loadingMore ? (
                                             <span className="flex items-center gap-2">
-                                                <Loader className="animate-spin" size={16} />
+                                                <Loader className="animate-spin" size={16}/>
                                                 Loading...
                                             </span>
                                         ) : (
