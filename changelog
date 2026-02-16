@@ -1,3 +1,7 @@
+v1.0.2
+1. Prevent user info loss when updating todo entity
+2. Restrict todo modification to the resource owner
+
 v1.0.1
 1. Fix dark mode theme switch
 

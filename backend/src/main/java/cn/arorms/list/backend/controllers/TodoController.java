@@ -54,19 +54,24 @@ public class TodoController {
 
     // Toggle completion status of an entity
     @PutMapping("/toggleComplete/{id}")
-    public ResponseEntity<Todo> toggleCompleteTodo(@PathVariable Long id) {
-        return ResponseEntity.ok(todoService.toggleCompleted(id));
+    public ResponseEntity<Todo> toggleCompleteTodo(@AuthenticationPrincipal Jwt jwt, @PathVariable Long id) {
+        Long userId = jwt.getClaim("user_id");
+        return ResponseEntity.ok(todoService.toggleCompleted(userId, id));
     }
 
+
+    // Modify
     @PutMapping()
-    public ResponseEntity<Todo> updateTodo(@RequestBody Todo todo) {
-        return ResponseEntity.ok(todoService.updateTodo(todo));
+    public ResponseEntity<Todo> updateTodo(@AuthenticationPrincipal Jwt jwt, @RequestBody Todo todo) {
+        Long userId = jwt.getClaim("user_id");
+        return ResponseEntity.ok(todoService.updateTodo(userId, todo));
     }
 
     // Delete an entity
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTodo(@PathVariable Long id) {
-        todoService.deleteTodo(id);
+    public ResponseEntity<Void> deleteTodo(@AuthenticationPrincipal Jwt jwt, @PathVariable Long id) {
+        Long userId = jwt.getClaim("user_id");
+        todoService.deleteTodo(userId, id);
         return ResponseEntity.ok().build();
     }
 }

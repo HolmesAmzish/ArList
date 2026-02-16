@@ -7,6 +7,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * Todo Entity
+ */
 @Entity @Table(name = "todos")
 @Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
 public class Todo {

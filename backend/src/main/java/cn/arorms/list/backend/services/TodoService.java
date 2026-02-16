@@ -65,26 +65,27 @@ public class TodoService {
         return todoRepository.save(todo);
     }
 
-    // Update
-    public Todo updateTodo(Todo todo) {
-        if (!todoRepository.existsById(todo.getId())) {
-            throw new NoSuchElementException("Can not found existing todo.");
-        }
-        return todoRepository.save(todo);
-    }
-
     // Toggle isCompleted
-    public Todo toggleCompleted(Long id) {
-        Todo existingTodo = todoRepository.findById(id)
+    public Todo toggleCompleted(Long userId, Long id) {
+        Todo existingTodo = todoRepository.findByIdAndUser_Id(id, userId)
                 .orElseThrow(() -> new NoSuchElementException("Can not found existing todo."));
         existingTodo.setIsCompleted(!existingTodo.getIsCompleted());
         return todoRepository.save(existingTodo);
     }
 
+    // Modify
+    public Todo updateTodo(Long userId, Todo todo) {
+        if (!todoRepository.existsByIdAndUser_Id(todo.getId(), userId)) {
+            throw new NoSuchElementException("Can not found existing todo.");
+        }
+        todo.setUser(userRepository.getReferenceById(userId));
+        return todoRepository.save(todo);
+    }
+
     // Delete
-    public void deleteTodo(Long id) {
-        Optional<Todo> todoOptinal = todoRepository.findById(id);
-        Todo todo = todoOptinal.orElseThrow(() -> new RuntimeException("Todo not found with ID:" + id));
-        todoRepository.delete(todo);
+    public void deleteTodo(Long userId, Long id) {
+        Todo existingTodo = todoRepository.findByIdAndUser_Id(id, userId)
+                .orElseThrow(() -> new NoSuchElementException("Can not found existing todo."));
+        todoRepository.delete(existingTodo);
     }
 }
