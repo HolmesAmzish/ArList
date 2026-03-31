@@ -34,9 +34,9 @@ public class TodoController {
             @RequestParam(value = "groupId", required = false) Long groupId,
             @AuthenticationPrincipal Jwt jwt
     ) {
-        Long userId = jwt.getClaim("user_id");
+        String username = jwt.getSubject();
         Pageable pageable = Pageable.ofSize(size).withPage(page);
-        return todoService.getAllByUserId(pageable, userId, groupId);
+        return todoService.getAllByUsername(pageable, username, groupId);
     }
 
     // Get an entity detail by ID
@@ -48,30 +48,30 @@ public class TodoController {
     // Add a new entity
     @PostMapping("/add")
     public ResponseEntity<Todo> addTodo(@AuthenticationPrincipal Jwt jwt, @RequestBody Todo todo) {
-        Long userId = jwt.getClaim("user_id");
-        return ResponseEntity.ok(todoService.addTodo(userId, todo));
+        String username = jwt.getSubject();
+        return ResponseEntity.ok(todoService.addTodo(username, todo));
     }
 
     // Toggle completion status of an entity
     @PutMapping("/toggleComplete/{id}")
     public ResponseEntity<Todo> toggleCompleteTodo(@AuthenticationPrincipal Jwt jwt, @PathVariable Long id) {
-        Long userId = jwt.getClaim("user_id");
-        return ResponseEntity.ok(todoService.toggleCompleted(userId, id));
+        String username = jwt.getSubject();
+        return ResponseEntity.ok(todoService.toggleCompleted(username, id));
     }
 
 
     // Modify
     @PutMapping()
     public ResponseEntity<Todo> updateTodo(@AuthenticationPrincipal Jwt jwt, @RequestBody Todo todo) {
-        Long userId = jwt.getClaim("user_id");
-        return ResponseEntity.ok(todoService.updateTodo(userId, todo));
+        String username = jwt.getSubject();
+        return ResponseEntity.ok(todoService.updateTodo(username, todo));
     }
 
     // Delete an entity
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTodo(@AuthenticationPrincipal Jwt jwt, @PathVariable Long id) {
-        Long userId = jwt.getClaim("user_id");
-        todoService.deleteTodo(userId, id);
+        String username = jwt.getSubject();
+        todoService.deleteTodo(username, id);
         return ResponseEntity.ok().build();
     }
 }

@@ -11,17 +11,17 @@ import java.util.List;
 
 public interface GroupRepository extends JpaRepository<Group, Long> {
 
-    List<Group> findByUser_Id(Long userId, Sort sort);
+    List<Group> findByCreatedBy(String username, Sort sort);
 
     @Modifying
     @Query("UPDATE Group g SET g.orderIndex = g.orderIndex + 1 " +
-            "WHERE g.orderIndex >= :start AND g.orderIndex <= :end")
-    void shiftForward(int start, int end);
+            "WHERE g.orderIndex >= :start AND g.orderIndex <= :end AND g.createdBy = :username")
+    void shiftForward(int start, int end, String username);
 
     @Modifying
     @Query("UPDATE Group g SET g.orderIndex = g.orderIndex - 1 " +
-            "WHERE g.orderIndex >= :start AND g.orderIndex <= :end")
-    void shiftBackward(int start, int end);
+            "WHERE g.orderIndex >= :start AND g.orderIndex <= :end AND g.createdBy = :username")
+    void shiftBackward(int start, int end, String username);
 
-    int countByUser_Id(Long userId);
+    int countByCreatedBy(String username);
 }

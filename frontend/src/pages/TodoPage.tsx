@@ -6,12 +6,10 @@ import { EditTodoModal } from '../componets/todo/EditTodoModal.tsx';
 import { EditGroupModal } from '../componets/todo/EditGroupModal.tsx';
 import { Plus, LayoutList, Loader, Menu, X, LogOut } from 'lucide-react';
 import type {Group, Todo, TodoCreateRequest, PaginatedResponse} from '../types.ts';
-import { groupApi, todoApi, authApi } from '../utils/api.ts';
-import { useNavigate } from 'react-router-dom';
+import { groupApi, todoApi } from '../utils/api.ts';
 import { useAuth } from '../contexts/AuthContext';
 
 export const TodoPage: React.FC = () => {
-    const navigate = useNavigate();
     const { logout: authContextLogout } = useAuth();
     const [groups, setGroups] = useState<Group[]>([]);
     const [todos, setTodos] = useState<Todo[]>([]);
@@ -254,9 +252,7 @@ export const TodoPage: React.FC = () => {
     };
 
     const handleLogout = () => {
-        authApi.logout();
         authContextLogout();
-        navigate('/login');
     };
 
     const activeGroup = groups.find(g => g.id === activeId);

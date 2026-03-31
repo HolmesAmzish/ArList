@@ -2,7 +2,6 @@ package cn.arorms.list.backend.services;
 
 import cn.arorms.list.backend.pojos.entities.Group;
 import cn.arorms.list.backend.repositories.GroupRepository;
-import cn.arorms.list.backend.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -14,51 +13,49 @@ import java.util.Optional;
 
 /**
  * GroupService
- * @version 1.0 2026-02-03
+ * @version 2.0 2026-03-24
  * @author Cacciatore
  */
 @Service
 public class GroupService {
     @Autowired
     private GroupRepository groupRepository;
-    @Autowired
-    private UserRepository userRepository;
 
     public GroupService(GroupRepository groupRepository) {
         this.groupRepository = groupRepository;
     }
 
-    public List<Group> getAllByUserId(Long userId) {
+    public List<Group> getAllByUsername(String username) {
         Sort sort = Sort.by(Sort.Direction.DESC, "orderIndex");
-        return groupRepository.findByUser_Id(userId, sort);
+        return groupRepository.findByCreatedBy(username, sort);
     }
 
-    public Group addGroup(Long userId, Group group) {
+    public Group addGroup(String username, Group group) {
         // Check group id to prevent update wrongly
         if (group.getId() != null) {
             throw new IllegalArgumentException("New group cannot have an ID!");
         }
 
         // Set user
-        group.setUser(userRepository.getReferenceById(userId));
+        group.setCreatedBy(username);
 
         // Set group order index for ui
-        int count = groupRepository.countByUser_Id(userId);
+        int count = groupRepository.countByCreatedBy(username);
         group.setOrderIndex(count);
 
         return groupRepository.save(group);
     }
 
-    public Group updateGroup(Long userId, Group group) {
+    public Group updateGroup(String username, Group group) {
         if (!groupRepository.existsById(group.getId())) {
             throw new NoSuchElementException("Can not found exsiting group");
         }
-        group.setUser(userRepository.getReferenceById(userId));
+        group.setCreatedBy(username);
         return groupRepository.save(group);
     }
 
     @Transactional
-    public Group updateGroupOrder(Group group) {
+    public Group updateGroupOrder(String username, Group group) {
 
         int originalOrderIndex = groupRepository.findById(group.getId())
                 .map(Group::getOrderIndex)
@@ -68,9 +65,9 @@ public class GroupService {
 
         // Shift related group order index before update the target group.
         if (originalOrderIndex < changedOrderIndex) {
-            groupRepository.shiftBackward(originalOrderIndex + 1, changedOrderIndex);
+            groupRepository.shiftBackward(originalOrderIndex + 1, changedOrderIndex, username);
         } else {
-            groupRepository.shiftForward(changedOrderIndex, originalOrderIndex - 1);
+            groupRepository.shiftForward(changedOrderIndex, originalOrderIndex - 1, username);
         }
 
 

@@ -31,19 +31,29 @@ class ApiError extends Error {
   }
 }
 
-// Token management
-const TOKEN_KEY = 'token';
-
-export const getToken = (): string | null => {
-  return localStorage.getItem(TOKEN_KEY);
-};
-
-export const setToken = (token: string): void => {
-  localStorage.setItem(TOKEN_KEY, token);
-};
-
-export const removeToken = (): void => {
-  localStorage.removeItem(TOKEN_KEY);
+// Helper function to get OIDC token from storage
+const getOidcToken = (): string | null => {
+  const storageKey = 'oidc.user:http://localhost:9000:arlist-frontend';
+  
+  // Try sessionStorage first (default)
+  let oidcStorage = sessionStorage.getItem(storageKey);
+  
+  // If not found, try localStorage
+  if (!oidcStorage) {
+    oidcStorage = localStorage.getItem(storageKey);
+  }
+  
+  if (oidcStorage) {
+    try {
+      const parsedStorage = JSON.parse(oidcStorage);
+      return parsedStorage.access_token || null;
+    } catch (e) {
+      console.error('Failed to parse OIDC storage:', e);
+      return null;
+    }
+  }
+  
+  return null;
 };
 
 // Create axios instance with base configuration
@@ -55,10 +65,10 @@ const createAxiosInstance = (): AxiosInstance => {
     },
   });
 
-  // Request interceptor to add auth token
+  // Request interceptor to add auth token from OIDC storage
   instance.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-      const token = getToken();
+      const token = getOidcToken();
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -89,35 +99,6 @@ const createAxiosInstance = (): AxiosInstance => {
 };
 
 const api = createAxiosInstance();
-
-// Authentication API
-export const authApi = {
-  register: async (data: RegisterRequest): Promise<void> => {
-    await api.post('/api/auth/register', data);
-    // Register doesn't return token, need to login after registration
-  },
-
-  login: async (data: LoginRequest): Promise<AuthResponse> => {
-    const response = await api.post<AuthResponse>('/api/auth/login', data);
-    const { access_token } = response.data;
-    if (access_token) {
-      setToken(access_token);
-    }
-    return response.data;
-  },
-
-  logout: (): void => {
-    removeToken();
-  },
-
-  getCurrentUser: (): { token: string | null; isAuthenticated: boolean } => {
-    const token = getToken();
-    return {
-      token,
-      isAuthenticated: !!token,
-    };
-  },
-};
 
 // Group API
 export const groupApi = {

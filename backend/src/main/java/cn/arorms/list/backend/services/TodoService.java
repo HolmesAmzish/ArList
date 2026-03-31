@@ -3,7 +3,6 @@ package cn.arorms.list.backend.services;
 import cn.arorms.list.backend.pojos.entities.Todo;
 import cn.arorms.list.backend.repositories.GroupRepository;
 import cn.arorms.list.backend.repositories.TodoRepository;
-import cn.arorms.list.backend.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -17,7 +16,7 @@ import java.util.Optional;
 
 /**
  * TodoService
- * @version 1.3 2025-07-16
+ * @version 2.0 2026-03-24
  * @author Cacciatore
  */
 @Service
@@ -25,15 +24,13 @@ public class TodoService {
     private static final Logger log = LoggerFactory.getLogger(TodoService.class);
     private final TodoRepository todoRepository;
     private final GroupRepository groupRepository;
-    private final UserRepository userRepository;
 
-    public TodoService(TodoRepository todoRepository, GroupRepository groupRepository, UserRepository userRepository) {
+    public TodoService(TodoRepository todoRepository, GroupRepository groupRepository) {
         this.todoRepository = todoRepository;
         this.groupRepository = groupRepository;
-        this.userRepository = userRepository;
     }
 
-    public Page<Todo> getAllByUserId(Pageable pageable, Long userId, Long groupId) {
+    public Page<Todo> getAllByUsername(Pageable pageable, String username, Long groupId) {
         Sort sort = Sort.by(Sort.Order.asc("isCompleted"),
                 Sort.Order.desc("createdAt"));
 
@@ -44,10 +41,10 @@ public class TodoService {
         );
 
         if (groupId != null) {
-            return todoRepository.findByUser_IdAndGroup_Id(userId, groupId, sortedPageable);
+            return todoRepository.findByCreatedByAndGroup_Id(username, groupId, sortedPageable);
         }
 
-        return todoRepository.findByUser_Id(userId, sortedPageable);
+        return todoRepository.findByCreatedBy(username, sortedPageable);
     }
 
     // Get by ID
@@ -57,8 +54,8 @@ public class TodoService {
     }
 
     // Create
-    public Todo addTodo(Long userId, Todo todo) {
-        todo.setUser(userRepository.getReferenceById(userId));
+    public Todo addTodo(String username, Todo todo) {
+        todo.setCreatedBy(username);
         if (todo.getGroup() != null && todo.getGroup().getId() != null) {
             todo.setGroup(groupRepository.getReferenceById(todo.getGroup().getId()));
         }
@@ -66,25 +63,25 @@ public class TodoService {
     }
 
     // Toggle isCompleted
-    public Todo toggleCompleted(Long userId, Long id) {
-        Todo existingTodo = todoRepository.findByIdAndUser_Id(id, userId)
+    public Todo toggleCompleted(String username, Long id) {
+        Todo existingTodo = todoRepository.findByIdAndCreatedBy(id, username)
                 .orElseThrow(() -> new NoSuchElementException("Can not found existing todo."));
         existingTodo.setIsCompleted(!existingTodo.getIsCompleted());
         return todoRepository.save(existingTodo);
     }
 
     // Modify
-    public Todo updateTodo(Long userId, Todo todo) {
-        if (!todoRepository.existsByIdAndUser_Id(todo.getId(), userId)) {
+    public Todo updateTodo(String username, Todo todo) {
+        if (!todoRepository.existsByIdAndCreatedBy(todo.getId(), username)) {
             throw new NoSuchElementException("Can not found existing todo.");
         }
-        todo.setUser(userRepository.getReferenceById(userId));
+        todo.setCreatedBy(username);
         return todoRepository.save(todo);
     }
 
     // Delete
-    public void deleteTodo(Long userId, Long id) {
-        Todo existingTodo = todoRepository.findByIdAndUser_Id(id, userId)
+    public void deleteTodo(String username, Long id) {
+        Todo existingTodo = todoRepository.findByIdAndCreatedBy(id, username)
                 .orElseThrow(() -> new NoSuchElementException("Can not found existing todo."));
         todoRepository.delete(existingTodo);
     }

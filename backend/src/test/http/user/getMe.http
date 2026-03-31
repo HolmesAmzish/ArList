@@ -1,0 +1,2 @@
+GET http://localhost:8080/api/user/me
+Authorization: Bearer {{jwt_token}}

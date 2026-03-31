@@ -1,3 +1,7 @@
+v1.1.0
+1. Add SSO
+2. Change foreign key of todos and groups
+
 v1.0.2
 1. Prevent user info loss when updating todo entity
 2. Restrict todo modification to the resource owner

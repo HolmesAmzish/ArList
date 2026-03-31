@@ -16,10 +16,14 @@ public class Todo {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
-    @JoinColumn(name = "user_id")
-    private User user;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JsonIgnore
+//    @JoinColumn(name = "user_id")
+//    private User user;
+
+    // Username from JWT subject
+    @Column(name = "created_by")
+    private String createdBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
@@ -40,5 +44,4 @@ public class Todo {
 
     @Column(name = "deadline")
     private LocalDateTime deadline;
-
 }

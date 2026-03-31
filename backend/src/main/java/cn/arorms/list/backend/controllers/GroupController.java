@@ -25,26 +25,28 @@ public class GroupController {
     // Get all groups
     @GetMapping()
     public List<Group> getAllGroups(@AuthenticationPrincipal Jwt jwt) {
-        Long userId = jwt.getClaim("user_id");
-        return groupService.getAllByUserId(userId);
+        String username = jwt.getSubject();
+        return groupService.getAllByUsername(username);
     }
 
     // Add a new group
     @PostMapping()
     public ResponseEntity<Group> addGroup(@AuthenticationPrincipal Jwt jwt, @RequestBody Group group) {
-        Long userId = jwt.getClaim("user_id");
-        return ResponseEntity.ok(groupService.addGroup(userId, group));
+        String username = jwt.getSubject();
+        return ResponseEntity.ok(groupService.addGroup(username, group));
     }
     // Change Order index
     @PutMapping("/updateOrder")
-    public ResponseEntity<Group> updateOrder(@RequestBody Group group) {
-        return ResponseEntity.ok(groupService.updateGroupOrder(group));
+    public ResponseEntity<Group> updateOrder(@AuthenticationPrincipal Jwt jwt, @RequestBody Group group) {
+        String username = jwt.getSubject();
+        return ResponseEntity.ok(groupService.updateGroupOrder(username, group));
     }
 
     // Modify the group
     @PutMapping()
     public ResponseEntity<Group> updateGroup(@AuthenticationPrincipal Jwt jwt, @RequestBody Group group) {
-        return ResponseEntity.ok(groupService.updateGroup(jwt.getClaim("user_id"), group));
+        String username = jwt.getSubject();
+        return ResponseEntity.ok(groupService.updateGroup(username, group));
     }
 
     // Delete the group
