@@ -39,6 +39,17 @@ public class TodoController {
         return todoService.getAllByUsername(pageable, username, groupId);
     }
 
+    @GetMapping("/deadline")
+    public Page<Todo> getAllTodosByDeadline(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size,
+            @AuthenticationPrincipal Jwt jwt
+    ) {
+        String username = jwt.getSubject();
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
+        return todoService.getAllByDeadline(pageable, username);
+    }
+
     // Get an entity detail by ID
     @GetMapping("/{id}")
     public Todo getTodoById(@PathVariable Long id) {

@@ -33,7 +33,7 @@ class ApiError extends Error {
 
 // Helper function to get OIDC token from storage
 const getOidcToken = (): string | null => {
-  const storageKey = 'oidc.user:http://localhost:9000:arlist-frontend';
+  const storageKey = 'oidc.user:https://auth.arorms.cn:arlist-frontend';
   
   // Try sessionStorage first (default)
   let oidcStorage = sessionStorage.getItem(storageKey);
@@ -127,6 +127,9 @@ export const todoApi = {
     }
     return api.get(url).then((response) => response.data);
   },
+
+  getTodosWithDeadlines: (page = 0, size = 20): Promise<PaginatedResponse<Todo>> =>
+    api.get(`/api/todo/deadline?page=${page}&size=${size}`).then((response) => response.data),
 
   getAllTodos: (page = 0, size = 20): Promise<PaginatedResponse<Todo>> =>
     api.get(`/api/todo?page=${page}&size=${size}`).then((response) => response.data),

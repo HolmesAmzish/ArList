@@ -12,7 +12,7 @@ export interface Todo {
     description: string;
     isCompleted: boolean;
     createdAt: string;
-    deadline: string;
+    deadline: string | null;
 }
 
 export interface TodoCreateRequest {

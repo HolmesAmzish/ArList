@@ -47,6 +47,17 @@ public class TodoService {
         return todoRepository.findByCreatedBy(username, sortedPageable);
     }
 
+    public Page<Todo> getAllByDeadline(Pageable pageable, String username) {
+        Sort sort = Sort.by(Sort.Order.desc("deadline"),
+                Sort.Order.desc("createdAt"));
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                sort
+        );
+        return todoRepository.findAllByDeadlineIsNotNull(pageable);
+    }
+
     // Get by ID
     public Todo getTodoById(Long id) {
         return todoRepository.findById(id)

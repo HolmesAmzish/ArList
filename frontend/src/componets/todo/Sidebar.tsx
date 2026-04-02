@@ -247,16 +247,27 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <h2 className="text-sm font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">My Lists</h2>
             </div>
             <nav className="flex-1 px-4 space-y-1">
-                <button
-                    onClick={() => onSelect('all')}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                        activeId === 'all' 
-                            ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 font-medium' 
-                            : 'hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'
-                    }`}
-                >
-                    <Hash size={18} className={activeId === 'all' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-500 dark:text-slate-500'} /> All Tasks
-                </button>
+                 <button
+                     onClick={() => onSelect('all')}
+                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                         activeId === 'all' 
+                             ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 font-medium' 
+                             : 'hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'
+                     }`}
+                 >
+                     <Hash size={18} className={activeId === 'all' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-500 dark:text-slate-500'} /> All Tasks
+                 </button>
+                 
+                 <button
+                     onClick={() => onSelect('deadline')}
+                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                         activeId === 'deadline' 
+                             ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 font-medium' 
+                             : 'hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'
+                     }`}
+                 >
+                     <Hash size={18} className={activeId === 'deadline' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-500 dark:text-slate-500'} /> With Deadline
+                 </button>
 
                 <div className="pt-4 pb-2 flex items-center justify-between px-3">
                     <span className="text-xs font-semibold text-slate-400 dark:text-slate-500">Categories</span>

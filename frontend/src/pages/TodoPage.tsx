@@ -51,15 +51,23 @@ export const TodoPage: React.FC = () => {
         }
     };
 
-    const loadTodos = async (page: number, reset: boolean = false) => {
+     const loadTodos = async (page: number, reset: boolean = false) => {
         if (page === 0 && !reset) return;
         
         const loadingState = page > 0 ? setLoadingMore : setLoading;
         loadingState(true);
         
         try {
-            const groupId = typeof activeId === 'number' ? activeId : undefined;
-            const response: PaginatedResponse<Todo> = await todoApi.getTodos(page, pagination.size, groupId);
+            let response: PaginatedResponse<Todo>;
+            
+            if (activeId === 'deadline') {
+                // Load todos with deadlines
+                response = await todoApi.getTodosWithDeadlines(page, pagination.size);
+            } else {
+                // Load todos by group or all
+                const groupId = typeof activeId === 'number' ? activeId : undefined;
+                response = await todoApi.getTodos(page, pagination.size, groupId);
+            }
             
             if (reset) {
                 setTodos(response.content);
@@ -311,7 +319,7 @@ export const TodoPage: React.FC = () => {
                         </button>
                         <LayoutList className="text-indigo-600 dark:text-indigo-400" size={20} />
                         <h1 className="text-lg font-bold text-slate-800 dark:text-slate-200">
-                            {activeId === 'all' ? 'All Tasks' : activeGroup?.name}
+                            {activeId === 'all' ? 'All Tasks' : activeId === 'deadline' ? 'Tasks with Deadline' : activeGroup?.name}
                         </h1>
                         <span className="bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-xs px-2 py-0.5 rounded-full font-medium">
               {pagination.totalElements}

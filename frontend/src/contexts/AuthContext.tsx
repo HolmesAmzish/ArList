@@ -13,12 +13,12 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AppAuthProvider = ({ children }: { children: React.ReactNode }) => {
     const auth = useOidcAuth();
 
-    // 当需要登录时，重定向到 9000 服务器
+    // Redirect to SSO server when login is needed
     const login = () => {
         auth.signinRedirect();
     };
 
-    // 当需要登出时，清除本地状态并可能通知 9000 服务器
+    // Clear local state and notify SSO server when logout is needed
     const logout = () => {
         auth.signoutRedirect();
         auth.removeUser();

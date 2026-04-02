@@ -20,6 +20,7 @@ export const EditTodoModal: React.FC<EditTodoModalProps> = ({
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
+    const [deadline, setDeadline] = useState<string>('');
     const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
@@ -27,6 +28,7 @@ export const EditTodoModal: React.FC<EditTodoModalProps> = ({
             setTitle(todo.title);
             setDescription(todo.description);
             setSelectedGroupId(todo.group?.id ?? null);
+            setDeadline(todo.deadline || '');
         }
     }, [todo]);
 
@@ -40,6 +42,7 @@ export const EditTodoModal: React.FC<EditTodoModalProps> = ({
                 title,
                 description,
                 group,
+                deadline: deadline || null,
             });
             onClose();
         } catch (error) {
@@ -106,6 +109,18 @@ export const EditTodoModal: React.FC<EditTodoModalProps> = ({
                                 </option>
                             ))}
                         </select>
+                    </div>
+                    
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                            Deadline (Optional)
+                        </label>
+                        <input
+                            type="datetime-local"
+                            value={deadline}
+                            onChange={(e) => setDeadline(e.target.value)}
+                            className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent text-slate-800 dark:text-slate-200"
+                        />
                     </div>
                 </div>
 
