@@ -4,12 +4,13 @@ import { Todo } from '../../types';
 // Helper function to format date and check if deadline is near
 const formatDeadline = (deadline: string | null) => {
   if (!deadline) return null;
-  
+
   const deadlineDate = new Date(deadline);
   const now = new Date();
   const timeDiff = deadlineDate.getTime() - now.getTime();
+  const hoursDiff = Math.floor(timeDiff / (1000 * 3600));
   const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-  
+
   // Format the date
   const formattedDate = deadlineDate.toLocaleDateString('en-US', {
     year: 'numeric',
@@ -18,10 +19,22 @@ const formatDeadline = (deadline: string | null) => {
     hour: '2-digit',
     minute: '2-digit'
   });
-  
+
+  // Calculate hours remaining
+  let hoursRemaining: string;
+  if (timeDiff > 0 && hoursDiff < 1) {
+    hoursRemaining = '<1hr';
+  } else if (timeDiff > 0) {
+    hoursRemaining = `${hoursDiff}hr`;
+  } else {
+    hoursRemaining = ''; // Past due - no remaining time display
+  }
+
   return {
     formattedDate,
-    isNear: daysDiff <= 1 && daysDiff >= 0, // Less than or equal to 1 day remaining
+    hoursRemaining,
+    isOverdue: timeDiff <= 0, // Past due
+    isNear: timeDiff > 0 && hoursDiff <= 24 && hoursDiff > 0, // Less than or equal to 24 hours remaining (not overdue)
     daysDiff
   };
 };
@@ -50,16 +63,21 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo, onToggle, onDelete, on
                   <Circle className="text-slate-300 dark:text-slate-600 group-hover:text-indigo-400 dark:group-hover:text-indigo-500" size={22} />
               )}
             </button>
-            <span className={`text-[15px] transition-all ${todo.isCompleted ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-300'}`}>
+            <span className={`text-[15px] transition-all ${todo.isCompleted ? 'line-through text-slate-400 dark:text-slate-500' : deadlineInfo?.isOverdue ? 'text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-300'}`}>
               {todo.title}
             </span>
           </div>
-          
+
           {deadlineInfo && (
-            <div className="mt-1 ml-10"> {/* Indent to align with title */}
-              <span className={`text-xs ${deadlineInfo.isNear ? 'text-red-500 font-bold' : 'text-slate-500 dark:text-slate-400'}`}>
+            <div className="mt-1 ml-10 flex items-center gap-2"> {/* Indent to align with title */}
+              <span className={`text-xs ${!todo.isCompleted && deadlineInfo.isNear ? 'text-red-500 font-bold' : 'text-slate-500 dark:text-slate-400'}`}>
                 Due: {deadlineInfo.formattedDate}
               </span>
+              {deadlineInfo.hoursRemaining && (
+                <span className={`text-xs ${!todo.isCompleted && deadlineInfo.isNear ? 'text-red-500 font-bold' : 'text-slate-400 dark:text-slate-500'}`}>
+                  ({deadlineInfo.hoursRemaining})
+                </span>
+              )}
             </div>
           )}
         </div>

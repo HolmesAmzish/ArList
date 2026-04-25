@@ -16,9 +16,9 @@ const onSigninCallback = (_user: User | void): void => {
 };
 
 const oidcConfig = {
-  authority: "https://auth.arorms.cn",
-  client_id: "arlist-frontend",
-  redirect_uri: "http://localhost:5173/callback",
+  authority: import.meta.env.VITE_OAUTH_AUTH_SERVER || "https://auth.arorms.cn",
+  client_id: import.meta.env.VITE_OAUTH_CLIENT_ID || "arlist-frontend",
+  redirect_uri: import.meta.env.VITE_OAUTH_REDIRECT_URI || "http://localhost:5173/callback",
   response_type: "code",
   scope: "openid profile",
   automaticSilentRenew: true,
@@ -29,12 +29,12 @@ const oidcConfig = {
   loadUserInfo: false,
   // Provide metadata manually to avoid CORS preflight request to .well-known/openid-configuration
   metadata: {
-    issuer: "https://auth.arorms.cn",
-    authorization_endpoint: "https://auth.arorms.cn/oauth2/authorize",
-    token_endpoint: "https://auth.arorms.cn/oauth2/token",
-    userinfo_endpoint: "https://auth.arorms.cn/userinfo",
-    end_session_endpoint: "https://auth.arorms.cn/logout",
-    jwks_uri: "https://auth.arorms.cn/oauth2/jwks",
+    issuer: import.meta.env.VITE_OAUTH_AUTH_SERVER || "https://auth.arorms.cn",
+    authorization_endpoint: `${import.meta.env.VITE_OAUTH_AUTH_SERVER || "https://auth.arorms.cn"}/oauth2/authorize`,
+    token_endpoint: `${import.meta.env.VITE_OAUTH_AUTH_SERVER || "https://auth.arorms.cn"}/oauth2/token`,
+    userinfo_endpoint: `${import.meta.env.VITE_OAUTH_AUTH_SERVER || "https://auth.arorms.cn"}/userinfo`,
+    end_session_endpoint: `${import.meta.env.VITE_OAUTH_AUTH_SERVER || "https://auth.arorms.cn"}/logout`,
+    jwks_uri: `${import.meta.env.VITE_OAUTH_AUTH_SERVER || "https://auth.arorms.cn"}/oauth2/jwks`,
     response_types_supported: ["code"],
     subject_types_supported: ["public"],
     id_token_signing_alg_values_supported: ["RS256"],

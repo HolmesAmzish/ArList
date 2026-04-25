@@ -33,26 +33,35 @@ class ApiError extends Error {
 
 // Helper function to get OIDC token from storage
 const getOidcToken = (): string | null => {
-  const storageKey = 'oidc.user:https://auth.arorms.cn:arlist-frontend';
-  
-  // Try sessionStorage first (default)
-  let oidcStorage = sessionStorage.getItem(storageKey);
-  
-  // If not found, try localStorage
-  if (!oidcStorage) {
-    oidcStorage = localStorage.getItem(storageKey);
-  }
-  
-  if (oidcStorage) {
-    try {
-      const parsedStorage = JSON.parse(oidcStorage);
-      return parsedStorage.access_token || null;
-    } catch (e) {
-      console.error('Failed to parse OIDC storage:', e);
-      return null;
+  // Try localStorage first (react-oidc-context uses localStorage by default)
+  for (const key in localStorage) {
+    if (key.startsWith('oidc.') && key.length > 5) {
+      try {
+        const parsedStorage = JSON.parse(localStorage.getItem(key) || '{}');
+        // Check if this is an OIDC user entry with access_token
+        if (parsedStorage && parsedStorage.access_token) {
+          return parsedStorage.access_token;
+        }
+      } catch (e) {
+        // Skip invalid entries
+      }
     }
   }
-  
+
+  // Fallback: try sessionStorage
+  for (const key in sessionStorage) {
+    if (key.startsWith('oidc.') && key.length > 5) {
+      try {
+        const parsedStorage = JSON.parse(sessionStorage.getItem(key) || '{}');
+        if (parsedStorage && parsedStorage.access_token) {
+          return parsedStorage.access_token;
+        }
+      } catch (e) {
+        // Skip invalid entries
+      }
+    }
+  }
+
   return null;
 };
 
