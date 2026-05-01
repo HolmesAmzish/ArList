@@ -102,8 +102,8 @@ const SortableGroupItem: React.FC<SortableGroupItemProps> = ({
                 aria-label={`Select category ${group.name}`}
                 className={`w-full flex items-center justify-between gap-3 px-3 py-2 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
                     activeId === group.id 
-                        ? 'bg-white dark:bg-slate-800 shadow-sm text-indigo-600 dark:text-indigo-400 font-medium ring-1 ring-slate-200 dark:ring-slate-700' 
-                        : `${isAnyDragging ? 'text-slate-600 dark:text-slate-400' : 'hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'}`
+                        ? 'bg-white dark:bg-dark-bg-secondary shadow-sm text-indigo-600 dark:text-indigo-400 font-medium ring-1 ring-slate-200 dark:ring-dark-border' 
+                        : `${isAnyDragging ? 'text-slate-600 dark:text-dark-text-secondary' : 'hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-dark-text-secondary'}`
                 } ${isAnyDragging ? 'cursor-default' : 'cursor-pointer'}`}
             >
                 <div className="flex items-center gap-2 flex-1 min-w-0">
@@ -111,7 +111,7 @@ const SortableGroupItem: React.FC<SortableGroupItemProps> = ({
                         <button
                             {...attributes}
                             {...listeners}
-                            className={`p-1 -ml-1 text-slate-400 dark:text-slate-500 transition-opacity ${
+                            className={`p-1 -ml-1 text-slate-400 dark:text-dark-text-muted transition-opacity ${
                                 isAnyDragging ? 'cursor-default' : 'hover:text-slate-600 dark:hover:text-slate-300 cursor-grab active:cursor-grabbing'
                             } ${isAnyDragging ? 'opacity-100' : 'opacity-100 group-hover:opacity-100'}`}
                             onClick={(e) => e.stopPropagation()}
@@ -120,17 +120,17 @@ const SortableGroupItem: React.FC<SortableGroupItemProps> = ({
                             <GripVertical size={16} />
                         </button>
                     )}
-                    <Folder size={18} className={activeId === group.id ? 'text-indigo-500 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500'} />
+                    <Folder size={18} className={activeId === group.id ? 'text-indigo-500 dark:text-indigo-400' : 'text-slate-400 dark:text-dark-text-muted'} />
                     <span className="truncate">{group.name}</span>
                 </div>
                 <button
                     onClick={(e) => onDropdownToggle(group.id, e)}
                     className={`p-1 rounded transition-opacity ${
-                        isAnyDragging ? '' : 'hover:bg-slate-300 dark:hover:bg-slate-700'
-                    } ${openDropdownId === group.id ? 'bg-slate-300 dark:bg-slate-700 opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+                        isAnyDragging ? '' : 'hover:bg-slate-300 dark:hover:bg-dark-bg-elevated'
+                    } ${openDropdownId === group.id ? 'bg-slate-300 dark:bg-dark-bg-elevated opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
                     disabled={isAnyDragging}
                 >
-                    <MoreVertical size={16} className="text-slate-700 dark:text-slate-300" />
+                    <MoreVertical size={16} className="text-slate-700 dark:text-dark-text-primary" />
                 </button>
             </div>
 
@@ -138,13 +138,13 @@ const SortableGroupItem: React.FC<SortableGroupItemProps> = ({
             {openDropdownId === group.id && (
                 <div
                     ref={(el) => { dropdownRefs.current[group.id] = el; }}
-                    className="absolute right-0 top-full mt-1 z-10 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 py-2"
+                    className="absolute right-0 top-full mt-1 z-10 w-48 bg-white dark:bg-dark-bg-secondary rounded-xl shadow-lg border border-slate-200 dark:border-dark-border py-2"
                 >
                     <button
                         onClick={handleModify}
-                        className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-700 dark:text-dark-text-primary hover:bg-slate-100 dark:hover:bg-dark-bg-tertiary transition-colors"
                     >
-                        <Edit size={16} className="text-slate-500 dark:text-slate-400" />
+                        <Edit size={16} className="text-slate-500 dark:text-dark-text-secondary" />
                         Modify
                     </button>
                     <button
@@ -242,44 +242,44 @@ export const Sidebar: React.FC<SidebarProps> = ({
     }, [openDropdownId]);
 
     return (
-        <aside className="w-72 bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col">
+        <aside className="w-72 bg-slate-50 dark:bg-dark-bg-primary border-r border-slate-200 dark:border-dark-border flex flex-col">
             <div className="p-6">
-                <h2 className="text-sm font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">My Lists</h2>
+                <h2 className="text-sm font-bold text-slate-400 dark:text-dark-text-muted uppercase tracking-widest">My Lists</h2>
             </div>
             <nav className="flex-1 px-4 space-y-1">
                  <button
                      onClick={() => onSelect('all')}
                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
                          activeId === 'all' 
-                             ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 font-medium' 
-                             : 'hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'
+                             ? 'bg-indigo-100 dark:bg-dark-bg-elevated text-indigo-700 dark:text-dark-text-primary font-medium' 
+                             : 'hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-dark-text-secondary'
                      }`}
                  >
-                     <Hash size={18} className={activeId === 'all' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-500 dark:text-slate-500'} /> All Tasks
+                     <Hash size={18} className={activeId === 'all' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-500 dark:text-dark-text-muted'} /> All Tasks
                  </button>
                  
                  <button
                      onClick={() => onSelect('deadline')}
                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
                          activeId === 'deadline' 
-                             ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 font-medium' 
-                             : 'hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'
+                             ? 'bg-indigo-100 dark:bg-dark-bg-elevated text-indigo-700 dark:text-dark-text-primary font-medium' 
+                             : 'hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-dark-text-secondary'
                      }`}
                  >
-                     <Hash size={18} className={activeId === 'deadline' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-500 dark:text-slate-500'} /> With Deadline
+                     <Hash size={18} className={activeId === 'deadline' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-500 dark:text-dark-text-muted'} /> With Deadline
                  </button>
 
                 <div className="pt-4 pb-2 flex items-center justify-between px-3">
-                    <span className="text-xs font-semibold text-slate-400 dark:text-slate-500">Categories</span>
+                    <span className="text-xs font-semibold text-slate-400 dark:text-dark-text-muted">Categories</span>
                     <div className="flex items-center gap-1">
                         <button 
                             onClick={() => setIsSortMode(!isSortMode)}
-                            className={`p-1 rounded transition-colors ${isSortMode ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400' : 'hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400'}`}
+                            className={`p-1 rounded transition-colors ${isSortMode ? 'bg-indigo-100 dark:bg-dark-bg-elevated text-indigo-600 dark:text-indigo-400' : 'hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 dark:text-dark-text-secondary'}`}
                             title={isSortMode ? "Exit sort mode" : "Sort categories"}
                         >
                             <ArrowUpDown size={16} />
                         </button>
-                        <button onClick={onAddGroup} className="p-1 hover:bg-slate-200 dark:hover:bg-slate-800 rounded text-slate-500 dark:text-slate-400 transition-colors">
+                        <button onClick={onAddGroup} className="p-1 hover:bg-slate-200 dark:hover:bg-slate-800 rounded text-slate-500 dark:text-dark-text-secondary transition-colors">
                             <Plus size={16} />
                         </button>
                     </div>
@@ -335,21 +335,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                     aria-label={`Select category ${group.name}`}
                                     className={`w-full flex items-center justify-between gap-3 px-3 py-2 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
                                         activeId === group.id 
-                                            ? 'bg-white dark:bg-slate-800 shadow-sm text-indigo-600 dark:text-indigo-400 font-medium ring-1 ring-slate-200 dark:ring-slate-700' 
-                                            : 'hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'
+                                            ? 'bg-white dark:bg-dark-bg-secondary shadow-sm text-indigo-600 dark:text-indigo-400 font-medium ring-1 ring-slate-200 dark:ring-dark-border' 
+                                            : 'hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-600 dark:text-dark-text-secondary'
                                     } cursor-pointer`}
                                 >
                                     <div className="flex items-center gap-2 flex-1 min-w-0">
-                                        <Folder size={18} className={activeId === group.id ? 'text-indigo-500 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500'} />
+                                        <Folder size={18} className={activeId === group.id ? 'text-indigo-500 dark:text-indigo-400' : 'text-slate-400 dark:text-dark-text-muted'} />
                                         <span className="truncate">{group.name}</span>
                                     </div>
                                     <button
                                         onClick={(e) => handleDropdownToggle(group.id, e)}
-                                        className={`p-1 rounded transition-opacity hover:bg-slate-300 dark:hover:bg-slate-700 ${
-                                            openDropdownId === group.id ? 'bg-slate-300 dark:bg-slate-700 opacity-100' : 'opacity-0 group-hover:opacity-100'
+                                        className={`p-1 rounded transition-opacity hover:bg-slate-300 dark:hover:bg-dark-bg-elevated ${
+                                            openDropdownId === group.id ? 'bg-slate-300 dark:bg-dark-bg-elevated opacity-100' : 'opacity-0 group-hover:opacity-100'
                                         }`}
                                     >
-                                        <MoreVertical size={16} className="text-slate-700 dark:text-slate-300" />
+                                        <MoreVertical size={16} className="text-slate-700 dark:text-dark-text-primary" />
                                     </button>
                                 </div>
 
@@ -357,16 +357,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                 {openDropdownId === group.id && (
                                     <div
                                         ref={(el) => { dropdownRefs.current[group.id] = el; }}
-                                        className="absolute right-0 top-full mt-1 z-10 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 py-2"
+                                        className="absolute right-0 top-full mt-1 z-10 w-48 bg-white dark:bg-dark-bg-secondary rounded-xl shadow-lg border border-slate-200 dark:border-dark-border py-2"
                                     >
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 onModifyGroup(group);
                                             }}
-                                            className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                                            className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-700 dark:text-dark-text-primary hover:bg-slate-100 dark:hover:bg-dark-bg-tertiary transition-colors"
                                         >
-                                            <Edit size={16} className="text-slate-500 dark:text-slate-400" />
+                                            <Edit size={16} className="text-slate-500 dark:text-dark-text-secondary" />
                                             Modify
                                         </button>
                                         <button
@@ -391,7 +391,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div className="p-4 border-t border-slate-200 dark:border-slate-800">
                 <button
                     onClick={toggleTheme}
-                    className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl transition-colors"
+                    className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-slate-100 dark:bg-dark-bg-tertiary hover:bg-slate-200 dark:hover:bg-dark-bg-elevated text-slate-700 dark:text-dark-text-primary rounded-xl transition-colors"
                 >
                     {theme === 'dark' ? (
                         <>

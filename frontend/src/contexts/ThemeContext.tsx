@@ -7,12 +7,20 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+const THEME_STORAGE_KEY = 'user-theme-preference';
+
 interface ThemeProviderProps {
   children: ReactNode;
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    // Check localStorage first for user preference
+    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      return savedTheme;
+    }
+    // Fall back to system preference
     const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
     return systemTheme ? 'dark' : 'light';
   });
@@ -24,21 +32,24 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     } else {
       root.classList.remove('dark');
     }
+    // Save preference to localStorage
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
   }, [theme]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    
+
     const handleChange = (e: MediaQueryListEvent) => {
-      // Only update if user hasn't manually changed the theme
-      // We could store a flag to track manual changes, but for now
-      // we'll just update based on system preference
-      setTheme(e.matches ? 'dark' : 'light');
+      // Only auto-switch if user hasn't set a manual preference
+      // We detect this by checking if localStorage has the key set
+      const hasManualPreference = localStorage.getItem(THEME_STORAGE_KEY) !== null;
+      if (!hasManualPreference) {
+        setTheme(e.matches ? 'dark' : 'light');
+      }
     };
 
-    // Modern browsers
     mediaQuery.addEventListener('change', handleChange);
-    
+
     return () => {
       mediaQuery.removeEventListener('change', handleChange);
     };

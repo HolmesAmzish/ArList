@@ -24,6 +24,6 @@ dist-ssr
 *.sw?
 /dev-dist/
 
-.env.development
-.env.production
+#.env.development
+#.env.production
 
